@@ -1,5 +1,5 @@
 # 基于 Vue 2 和 Bootstrap 4 的 todo-list demo
-> 在线预览 [DEMO](https://duccck.github.io.com)
+> 在线预览 [DEMO](https://duccck.github.io)
 ## 功能说明
 * 新增事件
 * 删除事件
