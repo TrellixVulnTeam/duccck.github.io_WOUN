@@ -5,9 +5,6 @@ var compMenu = {
             <div class="col text-left">
                 <button type="button" class="btn btn-primary" @click="$emit('change-component'), changeListButton()">{{ listButton }}</button>
             </div>
-            <div class="col text-center">
-                <h2>TO-DO</h2>
-            </div>
             <div class="col text-right">
                 <button type="button" class="btn btn-primary" @click="$emit('click', !displayInput), changeAddButton()">{{ addButton }}</button>
             </div>
