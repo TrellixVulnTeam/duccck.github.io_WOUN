@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="uft-8">
+        <link rel="shortcut" href="favicon.ico">
+        <title>Todo List</title>
+
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+        <link rel="stylesheet" href="css/style.css">
+    </head>
+
+    <body>
+        <div id="app" class="container-md p-3 my-3 border text-black jumbotron">
+            <comp-menu v-model="displayInput" @change-component="changeComponent"></comp-menu>
+            
+            <transition name="fade">
+                <comp-input v-if="displayInput" @click="add" ref="compInput"></comp-input>
+            </transition>
+
+            <component :is="component" :reverse-remaining-items='reverseRemainingItems' :reverse-done-items='reverseDoneItems' @delete="deleted($event)" @completed="completed($event)" @resume="resume($event)" @edit="edit(arguments)"></component> 
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <script src="js/main.js"></script>
+    </body>
+</html>

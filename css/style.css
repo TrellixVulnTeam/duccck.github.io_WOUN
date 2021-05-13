@@ -1,0 +1,59 @@
+/* btn style */
+.btn:focus,
+.btn:active.focus {
+    outline: none;    
+    box-shadow: none；
+}
+
+/* menu component style */
+.row button {
+    width: 7rem;
+}
+
+/* input component style*/
+.input-component {
+    border: 1px solid grey;
+    border-radius: 0.3rem;
+    margin: 1rem 0;
+}
+.input-box {
+    font-size: 1.2rem;
+    font-weight: 400;
+}
+.input-box::placeholder {
+    color: rgba(192, 192, 192, 1);
+}
+.input-box,
+.input-box:focus {
+    border: none;
+    outline: medium;
+    box-shadow: none;
+}
+.input-caution::placeholder {
+    color: orange;
+}
+
+/* fade input component */
+.fade-enter-active, .fade-leave-active {
+    transition: opacity 0.5s;
+}
+.fade-enter, .fade-leave-to {
+    opacity: 0;
+}
+
+/* list style */
+ul {
+    list-style-type: none;
+    padding: 0;
+    font-size: 1.5rem;
+}
+li {
+    border-bottom: 1px solid grey;
+    margin-top: 1.5rem;
+}
+li button {
+    width: 3rem;
+}
+[contenteditable]:focus {
+    outline: none;
+}
