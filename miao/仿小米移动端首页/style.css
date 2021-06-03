@@ -1,0 +1,219 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: calc(100vw / 375 * 100);
+  color: rgb(116, 116, 116);
+}
+
+body {
+  background-color: rgb(246,246,246);
+}
+
+img {
+  display: block;
+}
+
+.header-icon {
+  height: 0.25rem;
+}
+
+#search-icon {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+form {
+  border: 5px solid rgba(0, 0, 0, 0);
+  height: 0.3rem;
+  width: 70%;
+  border-radius: 0.04rem;
+  background-color: white;
+  position: relative;
+}
+
+input {
+  font-size: 0.15rem;
+  color: rgb(116, 116, 116);
+  display: block;
+  border: none;
+  height: 0.3rem;
+  width: 100%;
+  padding-left: 0.3rem;
+}
+
+input:focus {
+  outline: none;
+}
+
+input::placeholder {
+  color: rgb(116, 116, 116);
+  font-size: 0.15rem;
+}
+
+input::-webkit-search-cancel-button {
+  display: none;
+}
+
+.header-container {
+  /* position: sticky; */
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 2;
+  background-color: rgb(246,246,246);
+  height: 0.5rem;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+nav {
+  position: fixed;
+  top: 0.5rem;
+  width: 100%;
+  z-index: 2;
+  background-color: rgb(246,246,246);
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: center;
+}
+
+nav ul {
+  width: 90%;
+  font-size: 0.15rem;
+  list-style: none;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+nav ul li:first-child {
+  color: rgb(255, 105, 0);
+  border-bottom: 0.025rem solid rgb(255, 105, 0);
+  padding: 0.075rem 0;
+}
+
+#pulldown-icon {
+  display: block;
+  height: 0.3rem;
+}
+
+section:nth-child(1) {
+  margin-top: 0.875rem;
+}
+
+section:nth-child(1) img, section:nth-child(6) img {
+  width: 100%;
+}
+
+section:nth-child(2) ul {
+  list-style: none;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+section:nth-child(2) ul li {
+  width: 20%;
+}
+
+section:nth-child(2) ul li img {
+  width: 100%;
+}
+
+section:nth-child(3), section:nth-child(5) {
+  height: 0.05rem;
+}
+
+section:nth-child(4) {
+  display: flex;
+  flex-direction: row;
+}
+
+section:nth-child(4) > * {
+  width: 50%;
+}
+
+section:nth-child(4) div {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+section:last-child ul {
+  background-color: rgb(256,256,256);
+  list-style: none;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+section:last-child li {
+  width: 48%;
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+
+section:last-child li img {
+  width: 100%;
+}
+
+.tag {
+  transform: scale(0.3);
+  position: absolute;
+  bottom: 0.51rem;
+  right: -0.62rem;
+}
+
+.details {
+  margin: 0.1rem 0;
+}
+
+.item-name {
+  font-size: 0.15rem;
+  color: black;
+}
+
+.item-detail {
+  font-size: 0.1rem;
+  color: rgb(116, 116, 116);
+}
+
+.item-price {
+  font-size: 0.15rem;
+  color: red;
+}
+
+.item-price-start {
+  font-size: 0.1rem;
+}
+
+.item-price-old {
+  font-size: 0.1rem;
+  color: rgb(116, 116, 116);
+}
+
+.button-buy {
+  margin-top: 0.1rem;
+  display: inline-block;
+  height: 0.25rem;
+  width: 0.8rem;
+  line-height: 0.25rem;
+  color: white;
+  font-weight: bold;
+  border: 1px solid rgb(234, 98, 91);
+  border-radius: 0.04rem;
+  background-color: rgb(234, 98, 91);
+}
