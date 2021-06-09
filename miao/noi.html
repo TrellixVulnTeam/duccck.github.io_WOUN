@@ -102,7 +102,7 @@
   var c = (a % 100 - b) / 10; //十位
   var d = (a - a % 100) / 100; //百位
 
-  console.log(b, c, d);
+  console.log(b + c + d + '');
 </script>
 
 <script id="ch0103/14" type="null">
@@ -231,19 +231,10 @@
 <script id="ch0104/09" type="null">
   var a = Number(prompt("请输入一个整数："));
 
-  if(a % 3 != 0 && a % 5 != 0 && a % 7 !=0) {
-    console.log("n");
-  } else {
-    if(a % 3 == 0) {
-      if(a % 5 == 0) {
-        if( a % 7 == 0) console.log("3 5 7");
-        else console.log("3 5");
-      } else console.log("3");
-    } else if( a % 5 == 0) {
-        if(a % 7 == 0) console.log("5 7");
-        else console("5");
-    } else console.log("7");
-  }
+  if(a % 3 != 0 && a % 5 != 0 && a % 7 !=0) console.log("n");
+  if(a % 3 == 0) console.log(3);
+  if(a % 5 == 0) console.log(5);
+  if(a % 7 == 0) console.log(7);
 </script>
 
 <script id="ch0104/10" type="null">
