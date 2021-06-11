@@ -401,3 +401,312 @@
 
   console.log(Math.floor(d));
 </script>
+
+<script id="ch0105/01" type="null">
+  let n = Number(prompt("count:"));
+  let arr = 0;
+
+  for(let i = 0; i < n; i++) {
+    arr += Number(prompt("age:"));
+  }
+
+  console.log((arr / n).toFixed(2));
+</script>
+
+<script id="ch0105/02" type="null">
+  let sum = 0;
+
+  for(let i = 0; i < 12; i++) {
+    sum += (Number(prompt("balance:"))).toFixed(2);
+  }
+
+  console.log((sum / 12).toFixed(2));
+</script>
+
+<script id="ch0105/03" type="null">
+  let count = Number(prompt("count:"));
+  let i = 0;
+  let sum = 0;
+
+  while(i < count) {
+    sum += Number(prompt("float number:"));
+    i++;
+  }
+
+  console.log((sum / i).toFixed(4));
+</script>
+
+<script id="ch0105/04" type="null">
+  let count = Number(prompt("count:"));
+  let sum = 0;
+
+  for(let i = 0; i < count; i++) {
+    sum += Number(prompt("number:"));
+  }
+
+  console.log(sum + " " + (sum / count).toFixed(5));
+</script>
+
+<script id="ch0105/05" type="null">
+  let max = 0;
+  let count = Number(prompt("count:"));
+
+  for(let i = 0; i < count; i++) {
+    let grade = Number(prompt("grade:"))
+    if(grade > max) max = grade;
+  }
+
+  console.log(max);
+</script>
+
+<script id="ch0105/06" type="null">
+  let max = 0;
+  let min = 1000;
+  let count = Number(prompt("count:"));
+
+  for(let i = 0; i < count; i++) {
+    let number = Number(prompt("number:"))
+    if(number > max) max = number;
+    if(number < min) min = number;
+  }
+
+  console.log(max - min);
+</script>
+
+<script id="ch0105/07" type="null">
+  let gold = 0;
+  let silver = 0;
+  let copper = 0;
+  let count = Number(prompt("count:"));
+  let arr = [];
+
+  for(let i = 0; i < 3 * count; i++) {
+    arr[i] = Number(prompt("number:"))
+  }
+  for(let i = 0; i < arr.length; i += 3) {
+    gold += arr[i];
+  }
+  for(let i = 1; i < arr.length; i += 3) {
+    silver += arr[i];
+  }
+  for(let i = 2; i < arr.length; i += 3) {
+    copper += arr[i];
+  }
+
+  let total = gold + silver + copper;
+
+  console.log(gold + " " + silver + " " + copper + " " + total);
+</script>
+
+<script id="ch0105/08" type="null">
+  let count = Number(prompt("count:"));
+  let degree = 0;
+
+  for(let i = 0; i < count - 1; i++) {
+    degree += Number(prompt("degree:"))
+  }
+
+  console.log((count - 2) * 180 - degree);
+</script>
+
+<script id="ch0105/09" type="null">
+  let m = Number(prompt("m:"));
+  let n = Number(prompt("n:"));
+  let sum = 0;
+
+  for(let i = m; i <= n; i++) {
+    if(i % 2 == 1) sum += i;
+  }
+
+  console.log(sum);
+</script>
+
+<script id="ch0105/10" type="null">
+  let m = Number(prompt("m:"));
+  let n = Number(prompt("n:"));
+  let sum = 0;
+
+  for(let i = m; i <= n; i++) {
+    if(i % 17 == 0) sum += i;
+  }
+
+  console.log(sum);
+</script>
+
+<script id="ch0105/11" type="null">
+  let one = 0;
+  let five = 0;
+  let ten = 0;
+  let count = Number(prompt("count:"));
+
+  for(let i = 0; i < count; i++) {
+    let number = Number(prompt("number:"))
+    if(number == 1) one++;
+    if(number == 5) five++;
+    if(number == 10) ten++;
+  }
+
+  console.log(one + "\n" + five + "\n" + ten);
+</script>
+
+<script id="ch0105/12" type="null">
+  let length = Number(prompt("length:"));
+  let specify = Number(prompt("specify:"));
+  let count = 0;
+
+  for(let i = 0; i < length; i++) {
+    let number = Number(prompt("number:"))
+    if(specify == number) count++;
+  }
+
+  console.log(count);
+</script>
+
+<script id="ch0105/13" type="null">
+  let number = Number(prompt("number:"));
+  let power = Number(prompt("power:"));
+  let sum = 1;
+
+  for(let i = 0; i < power; i++) {
+    sum = sum * number;
+  }
+
+  console.log(sum);
+</script>
+
+<script id="ch0105/14" type="null">
+  let people = Number(prompt("people:"));
+  let year = Number(prompt("year:"));
+
+  for(let i = 0; i < year; i++) {
+    people = people * 1.001;
+  }
+
+  console.log(people.toFixed(4));
+</script>
+
+<script id="ch0105/15" type="null">
+  let increase = Number(prompt("increase:"));
+  let money = Number(prompt("money:"));
+  let year = Number(prompt("year:"));
+
+  for(let i = 0; i < year; i++) {
+    money = money * (1 + increase / 100);
+  }
+
+  console.log(Math.floor(money));
+</script>
+
+<script id="ch0105/16" type="null">
+  let salary = Number(prompt("salary:"));
+  let increase = Number(prompt("increase:"));
+  let price = 200;
+
+  for(let i = 1; i <= 20; i++) {
+    let sum = 50 * i;
+    if(i > 1) price = price * (1 + increase / 100);
+    if(sum >= price) {
+      console.log(i);
+      break;
+    }
+    if(i == 20 && sum < price) console.log("Impossible");
+  }
+</script>
+
+<script id="ch0105/17" type="null">
+  let number = Number(prompt("number:"));
+  let arr = [1, 1];
+
+  for(let i = 2; i < number; i++) {
+    arr[i] = arr[i - 1] + arr[i - 2];
+  }
+
+  console.log(arr[number - 1]);
+</script>
+
+<script id="ch0105/18" type="null">
+  let count = Number(prompt("count:"));
+  let cases = Number(prompt("cases:"));
+  let effective = Number(prompt("effective:"));
+  let percentage = effective / cases;
+
+  for(let i = 0; i < count - 1; i++) {
+    let cases = Number(prompt("cases:"));
+    let effective = Number(prompt("effective:"));
+    if(effective / cases - percentage > 0.05) console.log("better");
+    else if(percentage - effective / cases > 0.05) console.log("worse");
+    else console.log("same");
+  }
+</script>
+
+<script id="ch0105/19" type="null">
+  let count = Number(prompt("count:"));
+  let sum = 0;
+  let distance = 0;
+
+  for(let i = 0; i < count; i++) {
+    let horizontal = Number(prompt("horizontal:"));
+    let vertical = Number(prompt("vertical:"));
+    let people = Number(prompt("people:"));
+    sum += people;
+    distance += Math.sqrt(horizontal ** 2 + vertical ** 2) * 2;
+  }
+
+  let time = Math.ceil(sum * 1.5 + distance / 50);
+
+  console.log(time);
+</script>
+
+<script id="ch0105/20" type="null">
+  let height = Number(prompt("height:"));
+  let distance = 0;
+  let last_height = 0;
+
+  for(let i = 0; i < 10; i++) {
+    if(i < 9) {
+      height *= 0.5;
+      distance += height * 3;
+    } else {
+      distance += height;
+      last_height = height*0.5;
+    }
+  }
+
+  console.log(distance + "\n" + last_height);
+</script>
+
+<script id="ch0105/21" type="null">
+  let number = Number(prompt("number:"));
+
+  while(1) {
+    if(number == 1) {
+      console.log("End");
+      break;
+    }
+    if(number % 2 == 1) {
+      console.log(number + "*" + 3 + "+" + 1 + "=" + (number * 3 + 1) + "\n");
+      number = number * 3 + 1;
+    }
+    console.log(number + "/" + 2 + "=" + number / 2 + "\n");
+    number /= 2;
+  }
+</script>
+
+<script id="ch0105/22" type="null">
+  let reminder = 0;
+  let store = 0;
+
+  for(let i = 0; i < 12; i++) {
+    let budget = Number(prompt("budget:"));
+    store += Math.floor(300 - budget / 100);
+    if(reminder + 300 < budget) {
+      console.log("-" + i);
+      break;
+    } else {
+      reminder += 300 - budget - store;
+    }
+    if(i == 11) {
+      console.log(reminder += store * 1.2);
+    }
+  }
+</script>
