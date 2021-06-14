@@ -417,10 +417,10 @@
   let sum = 0;
 
   for(let i = 0; i < 12; i++) {
-    sum += (Number(prompt("balance:"))).toFixed(2);
+    sum += Number(prompt("balance:"));
   }
 
-  console.log((sum / 12).toFixed(2));
+  console.log("$" + (sum / 12).toFixed(2));
 </script>
 
 <script id="ch0105/03" type="null">
@@ -546,7 +546,9 @@
     if(number == 10) ten++;
   }
 
-  console.log(one + "\n" + five + "\n" + ten);
+  console.log(one);
+  console.log(five);
+  console.log(ten);
 </script>
 
 <script id="ch0105/12" type="null">
@@ -660,19 +662,20 @@
 <script id="ch0105/20" type="null">
   let height = Number(prompt("height:"));
   let distance = 0;
-  let last_height = 0;
+  let lastHeight = 0;
 
-  for(let i = 0; i < 10; i++) {
-    if(i < 9) {
+  for(let i = 1; i <= 10; i++) {
+    if(i < 10) {
       height *= 0.5;
       distance += height * 3;
     } else {
       distance += height;
-      last_height = height*0.5;
+      lastHeight = height * 0.5;
     }
   }
 
-  console.log(distance + "\n" + last_height);
+  console.log(distance.toFixed(4));
+  console.log(lastHeight.toFixed(7));
 </script>
 
 <script id="ch0105/21" type="null">
@@ -684,10 +687,10 @@
       break;
     }
     if(number % 2 == 1) {
-      console.log(number + "*" + 3 + "+" + 1 + "=" + (number * 3 + 1) + "\n");
+      console.log(number + "*3+1=" + (number * 3 + 1));
       number = number * 3 + 1;
     }
-    console.log(number + "/" + 2 + "=" + number / 2 + "\n");
+    console.log(number + "/2=" + number / 2);
     number /= 2;
   }
 </script>
@@ -731,15 +734,28 @@
 
 <script id="ch0105/24" type="null">
   let time = 0;
+  let lastTime = 0;
+  let sign = false;
   let count = Number(prompt("count:"));
 
   for(let i = 0; i < count; i++) {
     let shrink = Number(prompt("shrink:"));
     let relaxation = Number(prompt("relaxation:"));
 
-    if(shrink >= 90 && shrink <= 140 && relaxation >= 60 && relaxation <= 90) time++;
-
-    console.log(time);
+    if(shrink >= 90 && shrink <= 140 && relaxation >= 60 && relaxation <= 90) {
+      if(sign == true) {
+        time++;
+        lastTime = time;
+      } else {
+        sign = true;
+        time = 1;
+      }
+    } else {
+      sign = false;
+    }
+  }
+  
+  console.log(time > lastTime ? time : lastTime);
 </script>
 
 <script id="ch0105/25" type="null">
@@ -771,7 +787,8 @@
     }
 
     if(seven.length >= 3 && seven.reverse().toString() == nine.toString()) {
-      console.log(agent);
+      //console.log(agent);
+      console.log("（不提供）");
       break;
     } else {
       seven = [];
@@ -816,19 +833,12 @@
 
 <script id="ch0105/28" type="null">
   let number = Number(prompt("number:"));
-  let str = '';
 
   while(1) {
-    if(number < 10) {
-      str += number;
-      break;
-    }
-    
-    str += number % 10;
+    console.log(number % 10);
     number = Math.floor(number / 10);
+    if(number == 0) break;
   }
-
-  console.log(str);
 </script>
 
 <script id="ch0105/29" type="null">
@@ -885,6 +895,7 @@
   let light = Number(prompt("light:"));
   let people = Number(prompt("people:"));
   let state = [];
+  let str = [];
 
   for(let i = 1; i <= people; i++) {
     for(let j = 1; j <= light; j++) {
@@ -896,8 +907,10 @@
   }
 
   for(let i = 1; i <= light; i++) {
-    if(state[i] == -1) console.log(i);
+    if(state[i] == -1) str.push(i);
   }
+
+  console.log(str.join());
 </script>
 
 <script id="ch0105/32" type="null">
