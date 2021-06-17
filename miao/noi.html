@@ -1165,3 +1165,130 @@
     }
   }
 </script>
+
+<script id="narcissistic" type="null">
+  let num = Number(prompt("number:"));
+
+  if(num >= 100 && num <= 999) narcissistic(num);
+  else console.log("NO");
+
+  function narcissistic(number) {
+    let agent = number;
+    let num = [];
+    let sum = 0;
+
+    for(let i = 0; ; i++) {
+      num.push(agent % 10);
+      agent = parseInt(agent / 10);
+      if(agent == 0) break;
+    }
+
+    for(let i = 0; i < num.length; i++) {
+      sum += num[i] ** 3;
+    }
+
+    if(sum == number) console.log("YES");
+    else console.log("NO");
+  }
+</script>
+
+<script id="narcissistics" type="null">
+  narcissistics();
+
+  function narcissistics() {
+    for(let i = 100; i < 10000; i++) {
+      let agent = i;
+      let sum = 0;
+      let num = [];
+      
+      for(let j = 0; ; j++) {
+        num.push(agent % 10);
+        agent = parseInt(agent / 10);
+        if(agent == 0) break;
+      }
+
+      for(let k = 0; k < num.length; k++) {
+        sum += num[k] ** 3;
+      }
+
+      if(sum == i) console.log(i);
+    }
+  }
+</script>
+
+<script id="palindrom" type="null">
+  let num = Number(prompt("number:"));
+
+  palindrom(num);
+
+  function palindrom(number) {
+    let agent = number;
+    let num = [];
+    let signal = false;
+
+    for(let i = 0; ; i++) {
+      num.push(agent % 10);
+      agent = parseInt(agent / 10);
+      if(agent == 0) break;
+    }
+
+    // middle = parseInt(num.length / 2);
+
+    for(let i = 0; i < num.length; i++) {
+      for(let j = num.length - 1; j >= 0; j--) {
+        if(num[i] == num[j]) signal = true;
+        else signal = false;
+      }
+    }
+
+    if(signal == true) console.log("YES");
+    else console.log("NO");
+  }
+</script>
+
+<script id="weekday" type="null">
+  let year = Number(prompt("year:"));
+  let month = Number(prompt("month:"));
+
+  weekday(year, month);
+
+  function weekday(year, month) {
+    if(month == 1) month = 13;
+    if(month == 2) month = 14;
+
+    let c = parseInt(year / 100);
+    let y = year - c * 100;
+    let w = (y + parseInt(y / 4) + parseInt(c / 4) - 2 * c + parseInt(26 * (month + 1) / 10) + 1 - 1);
+
+    if(w < 0) w *= -1;
+
+    switch(w % 7) {
+      case 0:
+        console.log("Sunday");
+        break;
+      case 1:
+        console.log("Monday");
+        break;
+      case 2:
+        console.log("Tuesday");
+        break;
+      case 3:
+        console.log("Wednesday");
+        break;
+      case 4:
+        console.log("Thursday");
+        break;
+      case 5:
+        console.log("Friday");
+        break;
+      default:
+        console.log("Saturday");
+      }
+  }
+</script>
+
+<script id="complete-number">
+  let num = Number(prompt("number:"));
+  
+  function completeNumber() {}
+</script>
