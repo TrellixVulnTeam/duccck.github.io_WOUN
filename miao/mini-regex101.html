@@ -1,0 +1,134 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>RegExp</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <style>
+      html {
+        background-color: lightgrey;
+      }
+      body {
+        font-size: 32px;
+      }
+      main {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        justify-content: center;
+      }
+      .flexbox {
+        display: flex;
+        flex-direction: column;
+        width: 50%;
+      }
+      .son {
+        width: 100%;
+        height: auto;
+        flex-direction: row;
+        flex-wrap: wrap;
+      }
+      #regexp {
+        flex-grow: 1;
+        border: 2px solid black;
+      }
+      .checkbox {
+        width: 1.5rem;
+        height: 1.5rem;
+        margin: 1rem;
+      }
+      input, textarea {
+        font-size: 1.5rem;
+      }
+      textarea {
+        resize: none;
+        border: 2px solid black;
+      }
+      pre {
+        background-color: white;
+      }
+      span:nth-of-type(odd) {
+        background-color: red;
+      }
+      span:nth-of-type(even) {
+        background-color: orangered;
+      }
+    </style>
+  </head>
+  
+  <body>
+    <main>
+      <div class="flexbox father">
+        <p><label for="regexp">请输入 RegExp</label></p>
+        <div class="flexbox son">
+          <input id="regexp" type="text" name="regexp">
+          <label><input id="insensitive" class="checkbox" type="checkbox" name="modifier" value="i">i</label> 
+          <label><input id="global" class="checkbox" type="checkbox" name="modifier" value="g">g</label> 
+          <label><input id="multiple" class="checkbox" type="checkbox" name="modifier" value="m">m</label> 
+        </div>
+        <p><label for="test">请输入测试用例</label></p>
+        <textarea id="test" name="test" rows="20" cols="10"></textarea>
+        <pre id="alternative"></pre>
+      </div>
+    </main>
+
+    <script>
+      $(document).ready(() => {
+        let pattern = "";
+        let modifier = ""; 
+        let str = "";
+        // 函数：执行正则匹配
+        function execute(pattern, modifier, str) {
+          if(!pattern || !str) {
+            $("#alternative").text(str);
+            return;
+          }
+          // 给 str 匹配项加上标签，然后将结果放至 pre 标签中
+          try {
+            let regexp = new RegExp(pattern, modifier);
+            $("#regexp").css("border-color", "black");
+            $("#regexp:focus").css("outline-color", "black");
+            let content = str.replace(regexp, function(match) {
+              return "<span>" + match + "</span>";
+            });
+            $("#alternative").html(content);
+          } catch(err) {
+            $("#regexp").css("border-color", "red");
+            $("#regexp:focus").css("outline-color", "red");
+            $("#alternative").text(str);
+          }
+        }
+        // 函数：更新 modifier
+        function modifierChange(id) {
+          let val = $("#" + id).val();
+          if(modifier.includes(val)) {
+            modifier = modifier.replace(val, "");
+          } else {
+            modifier += val;
+          }
+          execute(pattern, modifier, str);
+        }
+        // 点击选项后更新 modifier
+        $("#insensitive").click(function() {
+           modifierChange(this.id);
+        })
+        $("#global").click(function() {
+           modifierChange(this.id);
+        })
+        $("#multiple").click(function() {
+           modifierChange(this.id);
+        })
+        // 输入后更新 pattern
+        $("#regexp").keyup(function() {
+          pattern = $(this).val();
+          execute(pattern, modifier, str);
+        });
+        // 输入后更新 str
+        $("textarea").keyup(function() {
+          str = $(this).val();
+          execute(pattern, modifier, str);
+        })
+      });
+    </script>
+  </body>
+</html>
