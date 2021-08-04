@@ -84,6 +84,8 @@
             if(pattern) {
               try {
                 new RegExp(pattern);
+                $("#regexp").css("border-color", "black");
+                $("#regexp:focus").css("outline-color", "black");
               } catch(err) {
                 $("#regexp").css("border-color", "red");
                 $("#regexp:focus").css("outline-color", "red");
