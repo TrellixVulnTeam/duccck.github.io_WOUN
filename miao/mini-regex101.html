@@ -81,6 +81,14 @@
         function execute(pattern, modifier, str) {
           if(!pattern || !str) {
             $("#alternative").text(str);
+            if(pattern) {
+              try {
+                new RegExp(pattern);
+              } catch(err) {
+                $("#regexp").css("border-color", "red");
+                $("#regexp:focus").css("outline-color", "red");
+              }
+            }
             return;
           }
           // 给 str 匹配项加上标签，然后将结果放至 pre 标签中
