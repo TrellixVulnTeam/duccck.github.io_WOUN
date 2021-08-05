@@ -67,7 +67,7 @@
           <label><input id="multiple" class="checkbox" type="checkbox" name="modifier" value="m">m</label> 
         </div>
         <p><label for="test">请输入测试用例</label></p>
-        <textarea id="test" name="test" rows="20" cols="10">fuck the cck\nck</textarea>
+        <textarea id="test" name="test" rows="20" cols="10">fuck the cck ck</textarea>
         <pre id="alternative"></pre>
       </div>
     </main>
@@ -118,6 +118,8 @@
           }
           execute(pattern, modifier, str);
         }
+        // 页面刷新后使用默认值运行
+        execute(pattern, modifier, str);
         // 点击选项后更新 modifier
         $("#insensitive").click(function() {
            modifierChange(this.id);
