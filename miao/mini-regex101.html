@@ -62,8 +62,8 @@
         <p><label for="regexp">请输入 RegExp</label></p>
         <div class="flexbox son">
           <input id="regexp" type="text" name="regexp">
-          <label><input id="insensitive" class="checkbox" type="checkbox" name="modifier" value="i">i</label> 
-          <label><input id="global" class="checkbox" type="checkbox" name="modifier" value="g">g</label> 
+          <label><input id="insensitive" class="checkbox" type="checkbox" name="modifier" value="i" checked>i</label> 
+          <label><input id="global" class="checkbox" type="checkbox" name="modifier" value="g" checked>g</label> 
           <label><input id="multiple" class="checkbox" type="checkbox" name="modifier" value="m">m</label> 
         </div>
         <p><label for="test">请输入测试用例</label></p>
@@ -74,9 +74,9 @@
 
     <script>
       $(document).ready(() => {
-        let pattern = "";
-        let modifier = ""; 
-        let str = "";
+        let pattern = "ck";
+        let modifier = "ig";
+        let str = "fuck the cck\nck";
         // 函数：执行正则匹配
         function execute(pattern, modifier, str) {
           if(!pattern || !str) {
