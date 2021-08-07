@@ -1,0 +1,104 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="uft-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS animation</title>
+    <style>
+      html, body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        background-image: url("./img/galaxy.jpg");
+        background-color: black;
+        background-color: white;
+        background-position: center;
+        background-size: cover;
+        
+      }
+      #container {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      #sun {
+        height: 15rem;
+        width: 15rem;
+        background-image: url("./img/sun.png");
+        background-color: red;
+        background-position: center;
+        background-size: cover;
+        border-radius: 50%;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        top: 0.083rem;
+        left: 10rem;
+      }
+      #earth {
+        height: 8rem;
+        width: 8rem;
+        background-image: url("./img/earth.png");
+        background-color: #0099CC;
+        background-position: center;
+        background-size: cover;
+        border-radius: 50%;
+        display: inline-block;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        top: 0.5rem;
+        left: 25rem;
+      }
+      #moon {
+        height: 4rem;
+        width: 4rem;
+        background-image: url("./img/moon.png");
+        background-color: lightgrey;
+        background-position: center;
+        background-size: cover;
+        border-radius: 50%;
+        position: relative;
+        top: 0rem;
+        left: 7rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container">
+      <div id="sun">
+        <div id="earth">
+          <div id="moon"></div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function animation(element, speed, radiusA, radiusB) {
+        let el = document.getElementById(element);
+        let angle = 0;
+        let lastTime = null;
+        function action(time) {
+          if(lastTime !== null) {
+            angle += (time - lastTime) * speed;
+          }
+          lastTime = time;
+          el.style.top = Math.sin(angle) * radiusA + "rem";
+          el.style.left = Math.cos(angle) * radiusB + "rem";
+          requestAnimationFrame(action);
+        }
+        requestAnimationFrame(action); // 为什么要写两个request，和直接调用 action(0) 区别?
+      }
+      setTimeout(() => {
+        animation("sun", 0.0005, 10, 10);
+        animation("earth", 0.001, 14, 24);
+        animation("moon", 0.005, 7, 7);
+      }, 2000);
+    </script>
+  </body>
+</html>
