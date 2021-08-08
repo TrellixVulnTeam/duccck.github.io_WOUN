@@ -166,4 +166,4 @@ let duccck = function () {
     difference: difference,
     head: head,
   }
-};
+}()
