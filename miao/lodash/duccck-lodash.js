@@ -1,4 +1,4 @@
-let duccck = function () {
+var duccck = function () {
   function chunk(array, size) {
     var result = []
     var count = 0
@@ -71,8 +71,8 @@ let duccck = function () {
   }
 
   function zip([arrays]) {
-      var result = []
-      var arr = []
+    var result = []
+    var arr = []
     for (var i = 0; i < array.length; i++) {
       arr.push(arrays.zip[i])
     }
@@ -82,15 +82,15 @@ let duccck = function () {
     var final = []
     for (num in array) {
       if (array[num])
-          final.push(array[num])
+        final.push(array[num])
     }
     return final
   }
-  
+
   function sumBy(ary, predicate) {
     predicate = iteratee(predicate)
 
-    var sum = 0
+    var sum = 0   //最后的结果。
     for (var i = 0; i < ary.length; i++) {
       sum += predicate(ary[i])
     }
@@ -98,7 +98,7 @@ let duccck = function () {
   }
 
   function flatten(array) {
-    return[].concat(...array)
+    return [].concat(...array)
   }
 
   function flattenDeep(array) {
@@ -132,7 +132,7 @@ let duccck = function () {
     return result
   }
 
-  function difference(array,...value) {
+  function difference(array, ...value) {
     var result = []
     var val = []
     for (var i = 0; i < value.length; i++) {

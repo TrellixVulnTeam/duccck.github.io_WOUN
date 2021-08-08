@@ -1,131 +1,140 @@
 <!doctype html>
 <html>
-  <head>
-    <meta charset="uft-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JS animation</title>
-    <style>
-      html, body {
-        height: 100%;
-      }
-      body {
-        margin: 0;
-        background-image: url("./img/galaxy.jpg");
-        background-color: black;
-        background-color: white;
-        background-position: center;
-        background-size: cover;
-        overflow: hidden;
-      }
-      #container {
-        width: 100%;
-        height: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-      #sun {
-        height: 15rem;
-        width: 15rem;
-        background-image: url("./img/sun.png");
-        background-color: red;
-        background-position: center;
-        background-size: cover;
-        border-radius: 50%;
-        position: relative;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        top: 0;
-        left: 10rem;
-      }
-      #earth {
-        height: 8rem;
-        width: 8rem;
-        background-image: url("./img/earth.png");
-        background-color: #0099CC;
-        background-position: center;
-        background-size: cover;
-        border-radius: 50%;
-        display: inline-block;
-        position: relative;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        top: 0;
-        left: 30rem;
-      }
-      #moon {
-        height: 2rem;
-        width: 2rem;
-        background-image: url("./img/moon.png");
-        background-color: lightgrey;
-        background-position: center;
-        background-size: cover;
-        border-radius: 50%;
-        position: relative;
-        top: 0;
-        left: 6rem;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="container">
-      <div id="sun">
-        <div id="earth">
-          <div id="moon"></div>
-        </div>
+
+<head>
+  <meta charset="uft-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JS animation</title>
+  <style>
+    html,
+    body {
+      height: 100%;
+    }
+
+    body {
+      margin: 0;
+      background-image: url("./img/galaxy.jpg");
+      background-color: black;
+      background-color: white;
+      background-position: center;
+      background-size: cover;
+      overflow: hidden;
+    }
+
+    #container {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #sun {
+      height: 15rem;
+      width: 15rem;
+      background-image: url("./img/sun.png");
+      background-color: red;
+      background-position: center;
+      background-size: cover;
+      border-radius: 50%;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      top: 0;
+      left: 10rem;
+    }
+
+    #earth {
+      height: 8rem;
+      width: 8rem;
+      background-image: url("./img/earth.png");
+      background-color: #0099CC;
+      background-position: center;
+      background-size: cover;
+      border-radius: 50%;
+      display: inline-block;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      top: 0;
+      left: 30rem;
+    }
+
+    #moon {
+      height: 2rem;
+      width: 2rem;
+      background-image: url("./img/moon.png");
+      background-color: lightgrey;
+      background-position: center;
+      background-size: cover;
+      border-radius: 50%;
+      position: relative;
+      top: 0;
+      left: 6rem;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="container">
+    <div id="sun">
+      <div id="earth">
+        <div id="moon"></div>
       </div>
     </div>
+  </div>
 
-    <script>
-      // 自转
-      function rotationWrap(element, speedRotation, elementSub = null, speedRevolution = 0, radiusX = 0, radiusY = 0) {
-        let el = document.getElementById(element);
-        let deg = 0;
-        function rotation() {
-          if(deg >= 360) {
-            deg = deg - 360;
-          }
-          deg += speedRotation;
-          el.style.transform = `rotate(${deg}deg)`;
-          if(elementSub) {
-            document.getElementById(elementSub).style.transform = `rotate(${-deg}deg)`;
-          }
-          requestAnimationFrame(rotation);
+  <script>
+    // 自转
+    function rotationWrap(element, speedRotation, elementSub = null, speedRevolution = 0, radiusX = 0, radiusY = 0) {
+      let el = document.getElementById(element);
+      let deg = 0;
+      function rotation() {
+        if (deg >= 360) {
+          deg = deg - 360;
+        }
+        deg += speedRotation;
+        el.style.transform = `rotate(${deg}deg)`;
+        if (elementSub) {
+          document.getElementById(elementSub).style.transform = `rotate(${-deg}deg)`;
         }
         requestAnimationFrame(rotation);
-        // 用子元素公转抵消父元素旋转
-        if(elementSub) {
-          revolutionWrap(elementSub, speedRevolution, radiusX, radiusY);
-        }
       }
-      // 公转
-      function revolutionWrap(element, speed, radiusX, radiusY) {
-        let el = document.getElementById(element);
-        let angle = 0;
-        let lastTime = 0;
-        function revolution(time) {
-          if(lastTime) {
-            angle += (time - lastTime) * speed;
-          }
-          lastTime = time;
-          el.style.left = Math.cos(angle) * radiusX + "rem";
-          el.style.top = Math.sin(angle) * radiusY + "rem";
-          requestAnimationFrame(revolution);
-        }
-        requestAnimationFrame(revolution); // 为什么要写两个request，和直接调用 action(0) 区别?
+      requestAnimationFrame(rotation);
+      // 用子元素公转抵消父元素旋转
+      if (elementSub) {
+        revolutionWrap(elementSub, speedRevolution, radiusX, radiusY);
       }
-      
-      rotationWrap("sun", 1, "earth", -0.0010458, 30, 30);
-      rotationWrap("earth", 3, "moon", -0.004185, 6, 6);
-      rotationWrap("moon", 10);
+    }
+    // 公转
+    function revolutionWrap(element, speed, radiusX, radiusY) {
+      let el = document.getElementById(element);
+      let angle = 0;
+      let lastTime = 0;
+      function revolution(time) {
+        if (lastTime) {
+          angle += (time - lastTime) * speed;
+        }
+        lastTime = time;
+        el.style.left = Math.cos(angle) * radiusX + "rem";
+        el.style.top = Math.sin(angle) * radiusY + "rem";
+        requestAnimationFrame(revolution);
+      }
+      requestAnimationFrame(revolution); // 为什么要写两个request，和直接调用 action(0) 区别?
+    }
 
-      setTimeout(() => {
-        revolutionWrap("sun", 0.0005, 10, 10);
-        revolutionWrap("earth", 0.001, 30, 30);
-        revolutionWrap("moon", 0.003, 6, 6);
-      }, 5000);
-    </script>
-  </body>
+    rotationWrap("sun", 1, "earth", -0.0010458, 30, 30);
+    rotationWrap("earth", 3, "moon", -0.004185, 6, 6);
+    rotationWrap("moon", 10);
+
+    setTimeout(() => {
+      revolutionWrap("sun", 0.0005, 10, 10);
+      revolutionWrap("earth", 0.001, 30, 30);
+      revolutionWrap("moon", 0.003, 6, 6);
+    }, 5000);
+  </script>
+</body>
+
 </html>
