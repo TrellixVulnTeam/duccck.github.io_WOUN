@@ -15,7 +15,7 @@
         background-color: white;
         background-position: center;
         background-size: cover;
-        
+        overflow: hidden;
       }
       #container {
         width: 100%;
@@ -36,7 +36,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        top: 0.083rem;
+        top: 0;
         left: 10rem;
       }
       #earth {
@@ -52,20 +52,20 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        top: 0.5rem;
-        left: 25rem;
+        top: 0;
+        left: 30rem;
       }
       #moon {
-        height: 4rem;
-        width: 4rem;
+        height: 2rem;
+        width: 2rem;
         background-image: url("./img/moon.png");
         background-color: lightgrey;
         background-position: center;
         background-size: cover;
         border-radius: 50%;
         position: relative;
-        top: 0rem;
-        left: 7rem;
+        top: 0;
+        left: 6rem;
       }
     </style>
   </head>
@@ -79,25 +79,52 @@
     </div>
 
     <script>
-      function animation(element, speed, radiusA, radiusB) {
+      // 自转
+      function rotationWrap(element, speedRotation, elementSub = null, speedRevolution = 0, radiusX = 0, radiusY = 0) {
+        let el = document.getElementById(element);
+        let deg = 0;
+        function rotation() {
+          if(deg >= 360) {
+            deg = deg - 360;
+          }
+          deg += speedRotation;
+          el.style.transform = `rotate(${deg}deg)`;
+          if(elementSub) {
+            document.getElementById(elementSub).style.transform = `rotate(${-deg}deg)`;
+          }
+          requestAnimationFrame(rotation);
+        }
+        requestAnimationFrame(rotation);
+        // 用子元素公转抵消父元素旋转
+        if(elementSub) {
+          revolutionWrap(elementSub, speedRevolution, radiusX, radiusY);
+        }
+      }
+      // 公转
+      function revolutionWrap(element, speed, radiusX, radiusY) {
         let el = document.getElementById(element);
         let angle = 0;
-        let lastTime = null;
-        function action(time) {
-          if(lastTime !== null) {
+        let lastTime = 0;
+        function revolution(time) {
+          if(lastTime) {
             angle += (time - lastTime) * speed;
           }
           lastTime = time;
-          el.style.top = Math.sin(angle) * radiusA + "rem";
-          el.style.left = Math.cos(angle) * radiusB + "rem";
-          requestAnimationFrame(action);
+          el.style.left = Math.cos(angle) * radiusX + "rem";
+          el.style.top = Math.sin(angle) * radiusY + "rem";
+          requestAnimationFrame(revolution);
         }
-        requestAnimationFrame(action); // 为什么要写两个request，和直接调用 action(0) 区别?
+        requestAnimationFrame(revolution); // 为什么要写两个request，和直接调用 action(0) 区别?
       }
+      
+      rotationWrap("sun", 1, "earth", -0.0010458, 30, 30);
+      rotationWrap("earth", 3, "moon", -0.004185, 6, 6);
+      rotationWrap("moon", 10);
+
       setTimeout(() => {
-        animation("sun", 0.0005, 10, 10);
-        animation("earth", 0.001, 14, 24);
-        animation("moon", 0.005, 7, 7);
+        revolutionWrap("sun", 0.0005, 10, 10);
+        revolutionWrap("earth", 0.001, 30, 30);
+        revolutionWrap("moon", 0.003, 6, 6);
       }, 5000);
     </script>
   </body>
