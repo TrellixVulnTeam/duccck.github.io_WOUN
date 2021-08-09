@@ -1,4 +1,4 @@
-<!doctype html>
+<!-- <!doctype html>
 <html>
 
 <head>
@@ -22,7 +22,7 @@
 
     function swapNode(a, b) {
       // 1、html；2、body；3、head；4、head子节点；5、互为父子节点；6、其中一个是文本节点，另一个不是
-      if (a == document.documentElement || a == document.body || a == choose("head", 0) || b == document.documentElement || b == document.body || b == choose("head", 0) || a.parentNode == b || b.parentNode == a || (a.nodeType == document.TEXT_NODE && b.nodeType !== document.TEXT_NODE) || (a.nodeType !== document.TEXT_NODE && b.nodeType == document.TEXT_NODE)) {
+      if (a == document.documentElement || a == document.body || a == choose("head", 0) || b == document.documentElement || b == document.body || b == choose("head", 0) || a.contains(b) || b.contains(a) || (a.nodeType == document.TEXT_NODE && b.nodeType !== document.TEXT_NODE) || (a.nodeType !== document.TEXT_NODE && b.nodeType == document.TEXT_NODE)) {
         return false;
       }
       let newA = a.cloneNode(true);
@@ -35,4 +35,21 @@
   </script>
 </body>
 
-</html>
+</html> -->
+
+<script>
+  function parseJSON(str) {
+    let result = [];
+    let i = 1;
+
+    if(str[i] == "[") {
+      let arr = [];
+      result.push(arr.push(parseJSON(str.slice(i, str.indexOf("]", i)))));
+      i++;
+    }
+    if(typeof str[i] == "number") {
+      return str.slice(i, str.indexOf(",", i));
+      i++;
+    }
+  }
+</script>

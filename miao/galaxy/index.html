@@ -41,8 +41,6 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      top: 0;
-      left: 10rem;
     }
 
     #earth {
@@ -59,7 +57,7 @@
       justify-content: center;
       align-items: center;
       top: 0;
-      left: 30rem;
+      left: 20rem;
     }
 
     #moon {
@@ -103,7 +101,7 @@
         requestAnimationFrame(rotation);
       }
       requestAnimationFrame(rotation);
-      // 用子元素公转抵消父元素旋转
+      // 子元素公转抵消父元素自转
       if (elementSub) {
         revolutionWrap(elementSub, speedRevolution, radiusX, radiusY);
       }
@@ -122,18 +120,15 @@
         el.style.top = Math.sin(angle) * radiusY + "rem";
         requestAnimationFrame(revolution);
       }
-      requestAnimationFrame(revolution); // 为什么要写两个request，和直接调用 action(0) 区别?
+      requestAnimationFrame(revolution);
     }
 
-    rotationWrap("sun", 1, "earth", -0.0010458, 30, 30);
+    rotationWrap("sun", 1, "earth", -0.0010458, 20, 20);
     rotationWrap("earth", 3, "moon", -0.004185, 6, 6);
     rotationWrap("moon", 10);
-
-    setTimeout(() => {
-      revolutionWrap("sun", 0.0005, 10, 10);
-      revolutionWrap("earth", 0.001, 30, 30);
-      revolutionWrap("moon", 0.003, 6, 6);
-    }, 5000);
+    revolutionWrap("sun", 0.0005, 10, 10);
+    revolutionWrap("earth", 0.001, 20, 20);
+    revolutionWrap("moon", 0.003, 6, 6);
   </script>
 </body>
 
