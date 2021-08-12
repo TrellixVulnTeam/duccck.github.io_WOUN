@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="zh-Hans">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Walking Man</title>
+  <style>
+    #one,
+    #two {
+      width: 55px;
+      height: 70px;
+      background-color: red;
+      background-size: cover;
+      position: absolute;
+    }
+
+    #one {
+      top: 0;
+      left: 0;
+      background-image: url("./img/mario_right.png");
+    }
+
+    #two {
+      top: 0;
+      right: 0;
+      background-image: url("./img/mario_left.png");
+    }
+  </style>
+</head>
+
+<body>
+  <div id="one"></div>
+  <div id="two"></div>
+
+  <script>
+    "use strict"
+
+    let styleOne = document.styleSheets[0].rules[1].style;
+    let styleTwo = document.styleSheets[0].rules[2].style;
+
+    function walkingMan(nodeOne, nodeTwo, direction, sign, ...arr) {
+      // 各方向的按键状态，用于记录各方向键是否被按住
+      let up = false;
+      let down = false;
+      let left = false;
+      let right = false;
+      // 水平、垂直方向的速度，有-1，0，1三种状态
+      let speedHorizontal = 0;
+      let speedVertical = 0;
+      // 45度斜向速度在各方向上的分量
+      let speed = Math.sqrt(0.5);
+      // 记录各方向上的最后一次按键状态，用于恢复之前的状态
+      // button[0] 表示左、右方向
+      // button[1] 表示上、下方向
+      let buttonState = ["", ""];
+
+      document.addEventListener("keydown", function (e) {
+        if (e.key == arr[0]) {
+          left = true;
+          buttonState[0] = "left";
+          if (nodeOne.backgroundImage !== 'url("./img/mario_left.png")') {
+            nodeOne.backgroundImage = 'url("./img/mario_left.png")';
+          }
+          if (buttonState[1]) {
+            if (buttonState[1] == "up") {
+              speedHorizontal = -speed;
+              speedVertical = -speed;
+            } else {
+              speedHorizontal = -speed;
+              speedVertical = speed;
+            }
+          } else {
+            speedHorizontal = -1;
+          }
+        }
+        if (e.key == arr[1]) {
+          right = true;
+          buttonState[0] = "right";
+          if (nodeOne.backgroundImage !== 'url("./img/mario_right.png")') {
+            nodeOne.backgroundImage = 'url("./img/mario_right.png")';
+          }
+          if (buttonState[1]) {
+            if (buttonState[1] == "up") {
+              speedHorizontal = speed;
+              speedVertical = -speed;
+            } else {
+              speedHorizontal = speed;
+              speedVertical = speed;
+            }
+          } else {
+            speedHorizontal = 1;
+          }
+        }
+        if (e.key == arr[2]) {
+          up = true;
+          buttonState[1] = "up";
+          if (buttonState[0]) {
+            if (buttonState[0] == "left") {
+              speedHorizontal = -speed;
+              speedVertical = -speed;
+            } else {
+              speedHorizontal = speed;
+              speedVertical = -speed;
+            }
+          } else {
+            speedVertical = -1;
+          }
+        }
+        if (e.key == arr[3]) {
+          down = true;
+          buttonState[1] = "down";
+          if (buttonState[0]) {
+            if (buttonState[0] == "left") {
+              speedHorizontal = -speed;
+              speedVertical = speed;
+            } else {
+              speedHorizontal = speed;
+              speedVertical = speed;
+            }
+          } else {
+            speedVertical = 1;
+          }
+        }
+      });
+
+      document.addEventListener("keyup", function (e) {
+        if (e.key == arr[0]) {
+          left = false;
+          if (!right) {
+            speedHorizontal = 0;
+            buttonState[0] = "";
+          } else {
+            if (nodeOne.backgroundImage !== 'url("./img/mario_right.png")') {
+              nodeOne.backgroundImage = 'url("./img/mario_right.png")';
+            }
+            speedHorizontal = 1;
+            buttonState[0] = "right";
+          }
+          if (up) {
+            speedVertical = -1;
+          }
+          if (down) {
+            speedVertical = 1;
+          }
+        }
+        if (e.key == arr[1]) {
+          right = false;
+          if (!left) {
+            speedHorizontal = 0;
+            buttonState[0] = "";
+          } else {
+            if (nodeOne.backgroundImage !== 'url("./img/mario_left.png")') {
+              nodeOne.backgroundImage = 'url("./img/mario_left.png")';
+            }
+            speedHorizontal = -1;
+            buttonState[0] = "left";
+          }
+          if (up) {
+            speedVertical = -1;
+          }
+          if (down) {
+            speedVertical = 1;
+          }
+        }
+        if (e.key == arr[2]) {
+          up = false;
+          if (!down) {
+            speedVertical = 0;
+            buttonState[1] = "";
+          } else {
+            speedVertical = 1;
+            buttonState[1] = "down";
+          }
+          if (buttonState[0]) {
+            if (buttonState[0] == "left") {
+              speedHorizontal = -1;
+            } else {
+              speedHorizontal = 1;
+            }
+          }
+        }
+        if (e.key == arr[3]) {
+          down = false;
+          if (!up) {
+            speedVertical = 0;
+            buttonState[1] = "";
+          } else {
+            speedVertical = -1;
+            buttonState[1] = "up";
+          }
+          if (buttonState[0]) {
+            if (buttonState[0] == "left") {
+              speedHorizontal = -1;
+            } else {
+              speedHorizontal = 1;
+            }
+          }
+        }
+      });
+
+      requestAnimationFrame(function move() {
+        nodeOne[direction] = parseInt(nodeOne[direction]) + speedHorizontal * 5 * sign + "px";
+        nodeOne.top = parseInt(nodeOne.top) + speedVertical * 5 + "px";
+        if (parseInt(nodeOne[direction]) < 0) {
+          nodeOne[direction] = "0";
+          speedHorizontal = 0;
+          if (speedVertical == speed) {
+            speedVertical = 1;
+          }
+          if (speedVertical == -speed) {
+            speedVertical = -1;
+          }
+        }
+        if (parseInt(nodeOne[direction]) > (innerWidth - 55)) {
+          nodeOne[direction] = `${innerWidth - 55}px`;
+          speedHorizontal = 0;
+          if (speedVertical == speed) {
+            speedVertical = 1;
+          }
+          if (speedVertical == -speed) {
+            speedVertical = -1;
+          }
+        }
+        if (parseInt(nodeOne.top) < 0) {
+          nodeOne.top = "0";
+          speedVertical = 0;
+          if (speedHorizontal == speed) {
+            speedHorizontal = 1;
+          }
+          if (speedHorizontal == -speed) {
+            speedHorizontal = -1;
+          }
+        }
+        if (parseInt(nodeOne.top) > (innerHeight - 70)) {
+          nodeOne.top = `${innerHeight - 70}px`;
+          speedVertical = 0;
+          if (speedHorizontal == speed) {
+            speedHorizontal = 1;
+          }
+          if (speedHorizontal == -speed) {
+            speedHorizontal = -1;
+          }
+        }
+        if (((parseInt(nodeOne.top) - parseInt(nodeTwo.top)) <= 70) && ((parseInt(nodeTwo.top) - parseInt(nodeOne.top)) <= 70) && (innerWidth - (parseInt(nodeOne.left) + parseInt(nodeTwo.right)) <= 110) && (innerWidth - (parseInt(nodeOne.left) + parseInt(nodeTwo.right)) >= 0)) {
+          nodeOne.left = nodeTwo.right = "0";
+          nodeOne.top = nodeTwo.top = "0";
+          nodeOne.backgroundImage = 'url("./img/mario_right.png")';
+          nodeTwo.backgroundImage = 'url("./img/mario_left.png")';
+          console.log("fuck!");
+        }
+        requestAnimationFrame(move);
+      });
+    }
+
+    walkingMan(styleOne, styleTwo, "left", 1, "a", "d", "w", "s");
+    walkingMan(styleTwo, styleOne, "right", -1, "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown");
+  </script>
+</body>
+
+</html>
