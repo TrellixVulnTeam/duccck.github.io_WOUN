@@ -1,41 +1,42 @@
-<!-- <!doctype html>
+<!doctype html>
 <html>
 
 <head>
   <title>FTC</title>
   <style>
+    .dot {
+      width: 20px;
+      height: 20px;
+      background-color: red;
+      display: inline-block;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+    }
   </style>
 </head>
 
 <body>
-  <p>
-    <span>FTC1</span>
-    <span>FTC2</span>
-  </p>
-  <p>
-    <span>FTC3</span>
-  </p>
+
   <script>
-    function choose(tagName, index) {
-      return document.getElementsByTagName(tagName)[index];
-    }
+    document.addEventListener("mousemove", (e) => {
+      let span = document.createElement("span");
+      span.className = "dot";
+      span.style.top = e.pageY + "px";
+      span.style.left = e.pageX + "px";
+      // span.style.transform = `translate(${e.pageX}px, ${e.pageY}px)`;
 
-    function swapNode(a, b) {
-      // 1、html；2、body；3、head；4、head子节点；5、互为父子节点；6、其中一个是文本节点，另一个不是
-      if (a == document.documentElement || a == document.body || a == choose("head", 0) || b == document.documentElement || b == document.body || b == choose("head", 0) || a.contains(b) || b.contains(a) || (a.nodeType == document.TEXT_NODE && b.nodeType !== document.TEXT_NODE) || (a.nodeType !== document.TEXT_NODE && b.nodeType == document.TEXT_NODE)) {
-        return false;
-      }
-      let newA = a.cloneNode(true);
-      let newB = b.cloneNode(true);
-      a.parentNode.replaceChild(newB, a);
-      b.parentNode.replaceChild(newA, b);
-
-    }
-    swapNode(choose("p", 1), choose("span", 1));
+      document.body.append(span);
+    })
   </script>
 </body>
 
-</html> -->
+</html>
 
 <!-- <script>
   function parseJSON(str) {
