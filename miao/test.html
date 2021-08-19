@@ -4,35 +4,37 @@
 <head>
   <title>FTC</title>
   <style>
-    .dot {
-      width: 20px;
-      height: 20px;
-      background-color: red;
-      display: inline-block;
-      position: absolute;
-      top: 0;
-      left: 0;
-    }
-
-    * {
-        margin: 0;
-        padding: 0;
+    #container {
+      width: 100px;
+      height: 105px;
+      border: 1px solid black;
+      overflow: hidden;
     }
   </style>
 </head>
 
 <body>
+  <div id="container"></div>
+  <button id="action">Next</button>
 
   <script>
-    document.addEventListener("mousemove", (e) => {
-      let span = document.createElement("span");
-      span.className = "dot";
-      span.style.top = e.pageY + "px";
-      span.style.left = e.pageX + "px";
-      // span.style.transform = `translate(${e.pageX}px, ${e.pageY}px)`;
+    // debugger;
+    function query(id) {
+      return document.getElementById(id);
+    }
 
-      document.body.append(span);
-    })
+    
+    // document.addEventListener("mousemove", (e) => {
+    //   let span = document.createElement("span");
+    //   span.className = "dot";
+    //   span.style.top = e.pageY + "px";
+    //   span.style.left = e.pageX + "px";
+    //   // span.style.transform = `translate(${e.pageX}px, ${e.pageY}px)`;
+
+    //   document.body.append(span);
+    // })
+    // let file = document.querySelector("input")[0];
+    // console.log(file);
   </script>
 </body>
 
