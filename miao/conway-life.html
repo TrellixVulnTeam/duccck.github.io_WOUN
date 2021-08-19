@@ -1,74 +1,185 @@
 <!doctype html>
-<html>
+<html lang="en">
 
 <head>
-  <title>FTC</title>
+  <meta charset="uft-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Conway-life</title>
+
   <style>
+    #caution {
+      width: 506px;
+      color: black;
+      font-size: large;
+      font-weight: bold;
+      text-align: center;
+    }
+
     #container {
-      width: 100px;
-      height: 105px;
-      border: 1px solid black;
+      width: 500px;
+      height: 525px;
+      border: 3px solid black;
       overflow: hidden;
+      margin: 10px 0;
+    }
+
+    #flex-box {
+      width: 506px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    button {
+      width: 70px;
+      height: 40px;
+      font-weight: bold;
+    }
+
+    #manual {
+      background-color: lightgreen;
+      display: inline-block;
+    }
+
+    #machine-run {
+      background-color: lightblue;
+    }
+
+    #machine-stop {
+      background-color: lightcoral;
     }
   </style>
 </head>
 
 <body>
+  <div id="caution">Click some checkboxs to begin</div>
   <div id="container"></div>
-  <button id="action">Next</button>
+  <div id="flex-box">
+    <!--
+    按键初始状态：
+    1、manual - enable
+    2、auto - enable
+    3、stop - disable
+    -->
+    <button id="manual" onclick="action()">Manual</button>
+    <div id="button-group">
+      <button id="machine-run" onclick="autoRunning()">Auto</button>
+      <button id="machine-stop" disabled onclick="stopRunning()">Stop</button>
+    </div>
+  </div>
 
   <script>
     function query(id) {
       return document.getElementById(id);
     }
 
-    let div = query("container");
-    let button = query("action");
+    let container = query("container");
+    let manual = query("manual");
+    let machineRun = query("machine-run");
+    let machineStop = query("machine-stop");
 
-    let count = 25;
-    while (count) {
-      let input = document.createElement("input");
-      input.type = "checkbox";
-      input.checked = false;
-      input.className = "checkbox"
-      div.append(input);
-      count--;
-    }
+    // 填充复选框
+    (() => {
+      let count = 625;
+      while (count) {
+        let input = document.createElement("input");
+        input.type = "checkbox";
+        input.checked = false;
+        input.className = "checkbox"
+        container.append(input);
+        count--;
+      }
+    })();
 
     let checkArr = Array.from(document.getElementsByClassName("checkbox"));
-    button.addEventListener("click", () => {
-      // debugger;
+    let id = null; // 定时器 id
+
+    // 自动运行函数
+    // 1、判断是否存在格子被勾选
+    // 2、存在，则直接定时运行 action 函数
+    // 3、不存在，则生成勾选，再定时运行 action 函数
+    function autoRunning() {
+      // 开始自动运行，将 manual / auto 按钮禁用，启用 stop 按钮
+      manual.disabled = true;
+      machineRun.disabled = true;
+      machineStop.disabled = false;
+
+      let count = 0;
+      for (let i = 0; i < checkArr.length; i++) {
+        if (checkArr[i].checked) {
+          count++;
+        }
+      }
+      if (count) {
+        id = setInterval(() => action(), 500);
+      } else {
+        for (let i = 0, index = 262; i < 5; i++, index += 25) {
+          checkArr[index].checked = true;
+        }
+        id = setInterval(() => action(), 500);
+      }
+    }
+
+    // 停止自动运行函数
+    function stopRunning() {
+      // 停止自动运行，将 stop 按钮禁用，启用 manual / auto 按钮
+      manual.disabled = false;
+      machineRun.disabled = false;
+      machineStop.disabled = true;
+
+      clearInterval(id);
+    }
+
+    // 格子状态转换函数
+    function action() {
+      // 当存在定时器 id 时，判断此时是否存在格子被勾选，如不存在，则停止自动运行函数
+      if (id) {
+        let checkCount = 0;
+        for (let i = 0; i < checkArr.length; i++) {
+          if (checkArr[i].checked) {
+            checkCount++;
+          }
+        }
+        if (checkCount == 0) {
+          stopRunning();
+        }
+      }
 
       let arrCopy = [];
-      checkArr.forEach(el => arrCopy.push(el.checked));
+      checkArr.forEach(el => arrCopy.push(el.checked)); // 将当前状态转存至另一个数组，防止干扰（由于 checkArr 数组元素为 node 对象，直接转存无法隔离，可只转存对应元素的 check 属性）
+
+      // 迭代判断每个格子周围格子的状态，然后作调整
       arrCopy.forEach((el, index) => {
         let stateArr = [];
         let indexArr = [];
-        if ((index + 1) % 5 == (index + 1)) {
+
+        // 找出格子周围需要被检查状态的格子序号
+        if ((index + 1) % 25 == (index + 1)) {
           if (index == 0) {
-            indexArr.push(1, 5, 6);
+            indexArr.push(1, 25, 26);
           } else {
-            indexArr.push(index - 1, index + 1, index + 4, index + 5, index + 6);
+            indexArr.push(index - 1, index + 1, index + 24, index + 25, index + 26);
           }
-        } else if ((index + 1) % 5 == 1) {
-          if (index % 5 == 0) {
-            indexArr.push(index - 5, index - 6, index + 1);
+        } else if ((index + 1) % 25 == 1) {
+          if (index % 25 == 0) {
+            indexArr.push(index - 25, index - 26, index + 1);
           } else {
-            indexArr.push(index - 5, index - 4, index + 5, index + 6);
+            indexArr.push(index - 25, index - 24, index + 25, index + 26);
           }
-        } else if ((index + 1) % 5 == 0) {
+        } else if ((index + 1) % 25 == 0) {
           if ((index + 1) == arrCopy.length) {
-            indexArr.push(index - 6, index - 5, index - 1);
-          } else if ((index + 1) == 5) {
-            indexArr.push(index - 1, index + 4, index = 5);
+            indexArr.push(index - 26, index - 25, index - 1);
+          } else if ((index + 1) == 25) {
+            indexArr.push(index - 1, index + 24, index + 25);
           } else {
-            indexArr.push(index - 6, index - 5, index - 1, index + 4, index + 5);
+            indexArr.push(index - 26, index - 25, index - 1, index + 24, index + 25);
           }
-        } else if (index > arrCopy.length - 5 && index < arrCopy.length - 1) {
-          indexArr.push(index - 6, index - 5, index - 4, index - 1, index + 1);
+        } else if (index > arrCopy.length - 25 && index < arrCopy.length - 1) {
+          indexArr.push(index - 26, index - 25, index - 24, index - 1, index + 1);
         } else {
-          indexArr.push(index - 1, index - 4, index - 5, index - 6, index + 1, index + 4, index + 5, index + 6);
+          indexArr.push(index - 1, index - 24, index - 25, index - 26, index + 1, index + 24, index + 25, index + 26);
         }
+
+        // 将格子周围格子状态保存至数组
         indexArr.forEach(el => {
           if (arrCopy[el]) {
             stateArr.push(1);
@@ -82,6 +193,8 @@
             count++;
           }
         });
+
+        // 根据格子周围格子状态调整当前格子的状态
         if (el) {
           if (count < 2 || count > 3) {
             checkArr[index].checked = false;
@@ -92,7 +205,7 @@
           }
         }
       });
-    });
+    }
   </script>
 </body>
 
