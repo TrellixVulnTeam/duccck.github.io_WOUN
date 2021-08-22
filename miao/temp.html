@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+
+<head>
+  <title>FTC</title>
+  <style>
+    #container {
+      width: 100px;
+      height: 105px;
+      border: 1px solid black;
+      overflow: hidden;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="container"></div>
+  <button id="action">Next</button>
+
+  <script>
+    // debugger;
+    
+    // document.addEventListener("mousemove", (e) => {
+    //   let span = document.createElement("span");
+    //   span.className = "dot";
+    //   span.style.top = e.pageY + "px";
+    //   span.style.left = e.pageX + "px";
+    //   // span.style.transform = `translate(${e.pageX}px, ${e.pageY}px)`;
+
+    //   document.body.append(span);
+    // })
+    // let file = document.querySelector("input")[0];
+    // console.log(file);
+  </script>
+</body>
+
+</html>
+
+<!-- <script>
+  function parseJSON(str) {
+    let result = [];
+    let i = 1;
+
+    if(str[i] == "[") {
+      let arr = [];
+      result.push(arr.push(parseJSON(str.slice(i, str.indexOf("]", i)))));
+      i++;
+    }
+    if(typeof str[i] == "number") {
+      return str.slice(i, str.indexOf(",", i));
+      i++;
+    }
+  }
+</script> -->
