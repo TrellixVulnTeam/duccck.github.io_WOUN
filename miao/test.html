@@ -1,7 +1,9 @@
 <!doctype html>
-<html>
+<html lang="en">
 
 <head>
+  <meta charset="uft-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FTC</title>
   <style>
     * {
@@ -10,66 +12,108 @@
     }
 
     #container {
-      width: 200px;
-      border: 5px solid black;
       position: relative;
-      top: 50px;
-      left: 50px;
+      width: 1000px;
+      height: 1000px;
+      border-right: 1px solid lightgrey;
+      border-bottom: 1px solid lightgrey;
     }
 
-    #bar {
+    .block {
       width: 100px;
-      height: 30px;
-      background-color: orange;
+      height: 100px;
+      position: absolute;
+    }
+
+    .one {
+      background-color: lightgreen;
+      top: 0;
+      left: 0;
+      z-index: 0;
+    }
+
+    .two {
+      background-color: lightskyblue;
+      top: 20px;
+      left: 20px;
+      z-index: 0;
+    }
+
+    .three {
+      background-color: lightsalmon;
+      top: 40px;
+      left: 40px;
+      z-index: 0;
     }
   </style>
 </head>
 
 <body>
   <div id="container">
-    <div id="bar"></div>
+    <div class="block one"></div>
+    <div class="block two"></div>
+    <div class="block three"></div>
   </div>
 
   <script>
-    // debugger;
+    "use strict"
 
-    let div = document.querySelector("#bar");
+    function addEvent(className, index) {
+      let el = document.getElementsByClassName(className)[0];
+      let div = document.getElementById("container");
+      let cssRules = document.styleSheets[0].rules;
+      let lastX = null;
+      let lastY = null;
 
-    div.addEventListener("mousedown", eventDown => {
-      let lastX = eventDown.clientX;
-
-      document.addEventListener("mousemove", function move(eventMove) {
-        if (eventMove.which != 1) {
+      function move(event) {
+        if(event.buttons != 1) {
           document.removeEventListener("mousemove", move);
         } else {
-          let currentX = eventMove.clientX;
-          
-          if(currentX < 75 ) {
-              currentX = 75;
+          let style = document.styleSheets[0].rules[index].style;
+          style.left = parseFloat(style.left) + (event.clientX - lastX) + "px";
+          style.top = parseFloat(style.top) + (event.clientY - lastY) + "px";
+          if(parseFloat(style.left) < 20) {
+            style.left = 0;
           }
-          if(currentX > 260) {
-            currentX = 260;
+          if(parseFloat(style.left) > 880) {
+            style.left = "900px";
           }
-
-          let styleWidth = document.styleSheets[0].rules[2].style;
-          let resultWidth = div.offsetWidth + currentX - lastX;
-
-          if (resultWidth > 200) {
-            styleWidth.width = "200px";
-            // document.removeEventListener("mousemove", move);
-          } else if (resultWidth < 20) {
-            styleWidth.width = "20px";
-            // document.removeEventListener("mousemove", move);
-          } else {
-            styleWidth.width = resultWidth + "px";
+          if(parseFloat(style.top) < 20) {
+            style.top = 0;
           }
-
-          lastX = currentX;
+          if(parseFloat(style.top) > 880) {
+            style.top = "900px";
+          }
+          lastX = event.clientX;
+          lastY = event.clientY;
         }
+      }
 
-        eventDown.preventDefault();
+      el.addEventListener("mousedown", eventDown => {
+        if (eventDown.buttons == 1) {
+          console.log("fuck")
+          lastX = eventDown.clientX;
+          lastY = eventDown.clientY;
+          for(let i = 3; i < 6; i++) {
+            if(i == index) {
+              cssRules[i].style.zIndex = 1;
+            } else {
+              cssRules[i].style.zIndex = parseInt(cssRules[i].style.zIndex) - 1;
+            }
+          }
+          document.addEventListener("mousemove", move);
+          eventDown.preventDefault();
+        }
       });
+    }
+
+    document.addEventListener("mousedown", event => {
+      console.log(event.target)
     })
+
+    addEvent("one", 3);
+    addEvent("two", 4);
+    addEvent("three", 5);
   </script>
 </body>
 

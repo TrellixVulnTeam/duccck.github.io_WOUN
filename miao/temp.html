@@ -1,54 +1,79 @@
 <!doctype html>
-<html>
+<html lang="en">
 
 <head>
+  <meta charset="uft-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FTC</title>
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
     #container {
+      width: 200px;
+      border: 5px solid black;
+      position: relative;
+      top: 50px;
+      left: 50px;
+    }
+
+    #bar {
       width: 100px;
-      height: 105px;
-      border: 1px solid black;
-      overflow: hidden;
+      height: 30px;
+      background-color: orange;
     }
   </style>
 </head>
 
 <body>
-  <div id="container"></div>
-  <button id="action">Next</button>
+  <div id="container">
+    <div id="bar"></div>
+  </div>
 
   <script>
+    "use strict"
     // debugger;
-    
-    // document.addEventListener("mousemove", (e) => {
-    //   let span = document.createElement("span");
-    //   span.className = "dot";
-    //   span.style.top = e.pageY + "px";
-    //   span.style.left = e.pageX + "px";
-    //   // span.style.transform = `translate(${e.pageX}px, ${e.pageY}px)`;
 
-    //   document.body.append(span);
-    // })
-    // let file = document.querySelector("input")[0];
-    // console.log(file);
+    let div = document.querySelector("#bar");
+
+    div.addEventListener("mousedown", eventDown => {
+      let lastX = eventDown.clientX;
+
+      document.addEventListener("mousemove", function move(eventMove) {
+        if (eventMove.which != 1) {
+          document.removeEventListener("mousemove", move);
+        } else {
+          let currentX = eventMove.clientX;
+          
+          if(currentX < 75 ) {
+              currentX = 75;
+          }
+          if(currentX > 260) {
+            currentX = 260;
+          }
+
+          let styleWidth = document.styleSheets[0].rules[2].style;
+          let resultWidth = div.offsetWidth + currentX - lastX;
+
+          if (resultWidth > 200) {
+            styleWidth.width = "200px";
+            // document.removeEventListener("mousemove", move);
+          } else if (resultWidth < 20) {
+            styleWidth.width = "20px";
+            // document.removeEventListener("mousemove", move);
+          } else {
+            styleWidth.width = resultWidth + "px";
+          }
+
+          lastX = currentX;
+        }
+
+        eventDown.preventDefault();
+      });
+    })
   </script>
 </body>
 
 </html>
-
-<!-- <script>
-  function parseJSON(str) {
-    let result = [];
-    let i = 1;
-
-    if(str[i] == "[") {
-      let arr = [];
-      result.push(arr.push(parseJSON(str.slice(i, str.indexOf("]", i)))));
-      i++;
-    }
-    if(typeof str[i] == "number") {
-      return str.slice(i, str.indexOf(",", i));
-      i++;
-    }
-  }
-</script> -->

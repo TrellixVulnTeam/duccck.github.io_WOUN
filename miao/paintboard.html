@@ -52,63 +52,66 @@
     let linesArr = [];
     let id = 0;
 
+    let button = 0;
+    let trackLine = "";
+    let color = document.querySelector("#color").value;
+    let lineWidth = document.querySelector("#line-width").value;
+    let line = null;
+
     function undo() {
-      // let elements = svg.querySelectorAll(".class-" + linesArr[linesArr.length - 1]);
-      let elements = svg.getElementsByClassName("class-" + linesArr[linesArr.length - 1]);
-
-      console.log(elements)
-      if(elements) {
-        for(let el of elements) {
-          el.remove();
-        }
+      let element = svg.lastElementChild;
+      if (element) {
+        svg.removeChild(element);
       }
-      // for(let i = 0; i < elements.length; i++) {
-      //   // elements[i].remove();
-      //   console.log(elements[i])
-      // }
-
-      // linesArr.pop();
     }
 
-    svg.addEventListener("mousedown", (eventDown) => {
-      let lastX = eventDown.clientX - svgRectX;
-      let lastY = eventDown.clientY - svgRectY;
-      let color = document.querySelector("#color").value;
-      let lineWidth = document.querySelector("#line-width").value;
-      
-      id++;
-      linesArr.push(id);
+    function lineInfo() {
+      line = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
+      line.setAttribute("class", "class-" + id);
+      line.setAttribute("style", `fill: none; stroke:${color}; stroke-width: ${lineWidth}`);
+    }
 
-      function draw(event) {
-        if (event.which != 1) {
-          // svg.outerHTML = svg.outerHTML; // 可以解绑所有事件，但无法再次绑定
-          svg.removeEventListener("mousemove", draw);
-          // document.addEventListener("key", press)
-        } else {
-          svg.addEventListener("mouseenter", function enterSvg(eventEnter) {
-            lastX = eventEnter.clientX - svgRectX;
-            lastY = eventEnter.clientY - svgRectY;
-            svg.removeEventListener("mouseenter", enterSvg);
-          });
+    function draw(event) {
 
-          let line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-          let currentX = event.clientX - svgRectX;
-          let currentY = event.clientY - svgRectY;
-
-          line.setAttribute("class", "class-" + id);
-          line.setAttribute("x1", lastX);
-          line.setAttribute("y1", lastY);
-          line.setAttribute("x2", currentX);
-          line.setAttribute("y2", currentY);
-          line.setAttribute("style", `stroke:${color}; stroke-width: ${lineWidth}px`);
-          svg.append(line);
-          lastX = currentX;
-          lastY = currentY;
-        }
+      if (event.buttons != 1 || button != 1) { // step 2
+        svg.removeEventListener("mousemove", draw);
+        trackLine = "";
+      } else {
+        svg.addEventListener("mouseenter", function enterSvg(eventEnter) {
+          trackLine = "";
+          lineInfo();
+          svg.removeEventListener("mouseenter", enterSvg);
+        });
+        linesArr.push(id);
+        svg.append(line);
+        trackLine = trackLine + " " + `${event.clientX - svgRectX},${event.clientY - svgRectY}`;
+        line.setAttribute("points", trackLine);
       }
+    }
 
-      eventDown.preventDefault();
-      svg.addEventListener("mousemove", draw);
+    svg.addEventListener("mousedown", eventDown => {
+      // eventDown.buttons 用于判断是否按下的为左键，是则继续运行
+      // 由于 eventDown.buttons read-only，将 eventDown 赋值给 button，用于后续判断（注释 step 1 和 step 2）
+      button = eventDown.buttons;
+
+      if (button == 1) {
+        id++;
+        lineInfo();
+        svg.addEventListener("mousemove", draw);
+        // step 1
+        // 当 mouseup 时，将 button 置为 0：防止鼠标移出 svg 外后被重新点击，再 mousemove 至 svg 内触发事件
+        document.addEventListener("mouseup", function resetButton() {
+          button = 0;
+          document.removeEventListener("mouseup", resetButton);
+        })
+        eventDown.preventDefault();
+      }
+    });
+    // undo 事件
+    document.addEventListener("keydown", event => {
+      if (event.ctrlKey && event.key == "z") {
+        undo();
+      }
     });
   </script>
 </body>
