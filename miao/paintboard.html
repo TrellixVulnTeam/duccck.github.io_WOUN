@@ -23,22 +23,81 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      background-color: lightgray;
     }
 
     svg {
       display: block;
       width: 500px;
       height: 500px;
+      background-color: white;
+    }
+
+    #container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .wrapper {
+      display: flex;
+      margin-bottom: 15px;
+    }
+
+    .two {
+      align-items: center;
+    }
+
+    input {
+      display: inline-block;
+      width: 50px;
+      height: 30px
+    }
+
+    #width {
+      width: 100px;
       border: 1px solid red;
+    }
+
+    [type=button] {
+      height: 32px;
+      border: 1px solid black;
+      border-radius: 2px;
+    }
+
+    span {
+      display: inline-block;
+      font-weight: bold;
+      padding-right: 15px;
+    }
+
+    #caution {
+      font-weight: bold;
+      font-size: 10px;
+      color: red;
+      margin-top: 5px;
     }
   </style>
 </head>
 
 <body>
   <div>
+    <div id="container">
+      <div class="wrapper one">
+        <input id="color" type="color">
+        <input id="line" data-shape="polyline" type="button" value="Line"
+          style="background-color: lightskyblue; margin: 0 0 0 15px;">
+        <input id="ellipse" data-shape="ellipse" type="button" value="Ellipse">
+      </div>
+      <div class="wrapper two">
+        <span id="width-value">Width: 5</span>
+        <input id="width" type="range" min="1" max="10" value="5">
+      </div>
+    </div>
     <svg></svg>
-    <input id="color" type="color">
-    <input id="line-width" type="range" min="1" max="10" value="5"><span id="width-value"></span>
+    <div id="caution">
+      Caution: Use hotkey (ctrl + z) to undo your operation.
+    </div>
   </div>
 
   <script>
@@ -49,15 +108,14 @@
     let svgRect = svg.getBoundingClientRect();
     let svgRectX = svgRect.x;
     let svgRectY = svgRect.y;
-    let linesArr = [];
-    let id = 0;
-
+    let shape = "polyline";
+    let lastX = 0;
+    let lastY = 0;
     let button = 0;
     let trackLine = "";
-    let color = document.querySelector("#color").value;
-    let lineWidth = document.querySelector("#line-width").value;
     let line = null;
 
+    // 撤销操作
     function undo() {
       let element = svg.lastElementChild;
       if (element) {
@@ -65,52 +123,111 @@
       }
     }
 
+    // undo 事件
+    document.addEventListener("keydown", event => {
+      if (event.ctrlKey && event.key == "z") {
+        undo();
+      }
+    });
+
+    // 显示画笔粗细
+    let span = document.querySelector("#width-value");
+    let lineWidth = document.querySelector("#width");
+    lineWidth.addEventListener("mousedown", () => {
+      lineWidth.addEventListener("mousemove", function changeValue() {
+        requestAnimationFrame(function render() {
+          let widthValue = lineWidth.value;
+          span.innerText = `Width: ${widthValue}`;
+          requestAnimationFrame(render);
+        })
+        lineWidth.removeEventListener("mousemove", changeValue);
+      });
+    });
+
+    // 监听 shape 按钮，获取 shape 并改变按钮背景颜色
+    let shapeButtons = Array.from(document.querySelectorAll("[type=button]"));
+    shapeButtons.forEach(el => {
+      el.addEventListener("click", () => {
+        shape = el.dataset.shape;
+        el.style.backgroundColor = "lightskyblue";
+        shapeButtons.forEach(item => {
+          if (item != el) {
+            item.style.backgroundColor = "";
+          }
+        })
+      });
+    });
+
+    // svg 元素信息
     function lineInfo() {
-      line = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
-      line.setAttribute("class", "class-" + id);
-      line.setAttribute("style", `fill: none; stroke:${color}; stroke-width: ${lineWidth}`);
+      let color = document.querySelector("#color").value;
+      line = document.createElementNS("http://www.w3.org/2000/svg", shape);
+      line.setAttribute("style", `fill: none; stroke-linecap: round; stroke:${color}; stroke-width: ${lineWidth.value}`);
     }
 
+    // draw
     function draw(event) {
-
       if (event.buttons != 1 || button != 1) { // step 2
         svg.removeEventListener("mousemove", draw);
-        trackLine = "";
-      } else {
-        svg.addEventListener("mouseenter", function enterSvg(eventEnter) {
+        if (shape == "polyline") {
           trackLine = "";
-          lineInfo();
-          svg.removeEventListener("mouseenter", enterSvg);
-        });
-        linesArr.push(id);
+        }
+        if (shape == "ellipse") {
+          lastY = 0;
+          lastY = 0;
+        }
+      } else {
+        if (shape == "polyline") {
+          svg.addEventListener("mouseenter", function enterSvg(eventEnter) {
+            trackLine = "";
+            lineInfo();
+            // lastY = 0;-------------------------
+            // lastY = 0;
+            svg.removeEventListener("mouseenter", enterSvg);
+          });
+          trackLine = trackLine + " " + `${event.clientX - svgRectX},${event.clientY - svgRectY}`; // trackLine
+          line.setAttribute("points", trackLine);
+        }
+        if (shape == "ellipse") {
+          let currentX = event.clientX - svgRectX;
+          let currentY = event.clientY - svgRectY;
+          let rx = Math.abs((currentX - lastX)) / 2;
+          let ry = Math.abs((currentY - lastY)) / 2;
+          let cx = lastX + (currentX - lastX) / 2;
+          let cy = lastY + (currentY - lastY) / 2;
+          line.setAttribute("cx", cx);
+          line.setAttribute("cy", cy);
+          line.setAttribute("rx", rx);
+          line.setAttribute("ry", ry);
+        }
         svg.append(line);
-        trackLine = trackLine + " " + `${event.clientX - svgRectX},${event.clientY - svgRectY}`;
-        line.setAttribute("points", trackLine);
       }
     }
 
+    // 监听 svg
     svg.addEventListener("mousedown", eventDown => {
       // eventDown.buttons 用于判断是否按下的为左键，是则继续运行
       // 由于 eventDown.buttons read-only，将 eventDown 赋值给 button，用于后续判断（注释 step 1 和 step 2）
       button = eventDown.buttons;
 
       if (button == 1) {
-        id++;
+        if (shape == "ellipse") {
+          lastX = eventDown.clientX - svgRectX;
+          lastY = eventDown.clientY - svgRectY;
+        }
+
         lineInfo();
         svg.addEventListener("mousemove", draw);
-        // step 1
-        // 当 mouseup 时，将 button 置为 0：防止鼠标移出 svg 外后被重新点击，再 mousemove 至 svg 内触发事件
-        document.addEventListener("mouseup", function resetButton() {
-          button = 0;
-          document.removeEventListener("mouseup", resetButton);
-        })
-        eventDown.preventDefault();
-      }
-    });
-    // undo 事件
-    document.addEventListener("keydown", event => {
-      if (event.ctrlKey && event.key == "z") {
-        undo();
+
+        if (shape == "polyline") {
+          // step 1
+          // 当 mouseup 时，将 button 置为 0：防止鼠标移出 svg 外后被重新点击，再 mousemove 至 svg 内触发事件
+          document.addEventListener("mouseup", function resetButton() {
+            button = 0;
+            document.removeEventListener("mouseup", resetButton);
+          });
+          eventDown.preventDefault();
+        }
       }
     });
   </script>
