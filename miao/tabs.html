@@ -21,16 +21,19 @@
       line-height: 50px;
       font-weight: bold;
     }
+
     article {
       width: 563px;
       position: relative;
     }
+
     section {
       margin: 0 53px 0 40px;
       border: 1px solid #E2E6EA;
       border-radius: 5px;
       position: relative;
     }
+
     section li:nth-child(2) {
       margin: 5px 0;
     }
@@ -72,18 +75,18 @@
   </article>
 
   <script>
-    $(".singer").each(function(index, el) {
-      $(el).click(function() {
-        $(".singer").each(function(indexCopy, elCopy) {
-          if(indexCopy != index) {
+    $(".singer").each(function (index, el) {
+      $(el).click(function () {
+        $(".singer").each(function (indexCopy, elCopy) {
+          if (indexCopy != index) {
             $(elCopy).css("background-color", "#E2E6EA");
           } else {
             $(elCopy).css("background-color", "lightskyblue");
           }
         });
 
-        $("section").each(function(indexSection, elSection) {
-          if(indexSection == index) {
+        $("section").each(function (indexSection, elSection) {
+          if (indexSection == index) {
             $(elSection).css("visibility", "visible");
           } else {
             $(elSection).css("visibility", "hidden");
