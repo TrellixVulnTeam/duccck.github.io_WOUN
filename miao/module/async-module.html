@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="uft-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tabs</title>
+  <!-- <link rel="icon" href="favicon.png" type="image/png"> -->
+
+  <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
+
+  <style>
+  </style>
+</head>
+
+<body>
+
+  <script>
+    // (function () {
+      function readFile(url, callback) {
+        let xhr = new XMLHttpRequest();
+        xhr.open("GET", url);
+        xhr.onload = () => {
+          callback(xhr.responseText);
+        }
+        xhr.send();
+      }
+
+      function require(name) {
+        if (name in require.cache) {
+          return require.cache[name].exports;
+        }
+
+        let code = new Function("module, exports", require.codeCache[name]);
+        // 单独声明一个 exports 对象
+        let exports = {};
+        let module = {
+          id: name,
+          // 将 exports 对象赋值给 exports 属性，就可以在 module 中简写为 exports.xxx 而非 module.exports.xxx
+          exports: exports
+        };
+
+        require.cache[name] = module;
+        code(module, exports);
+
+        // exports 即为接口（使用对象作为接口）
+        // console.log(module.exports)
+        return module.exports;
+      }
+
+      // 存放已加载的模块
+      require.cache = {};
+      // 存放已加载的模块代码
+      require.codeCache = {};
+      // 指定入口文件，并开始加载
+      require.run = function(entry) {
+        // debugger;
+
+        loadDeps(entry, () => {
+          require(entry);
+        });
+      };
+
+      // 加载并缓存模块代码及依赖
+      // 加载缓存完毕后调用 callback 开始执行代码
+      function loadDeps(fileName, callback) {
+        if(require.codeCache[fileName]) {
+          callback();
+          return;
+        }
+
+        readFile(fileName, code => {
+          require.codeCache[fileName] = code;
+          let deps = findDeps(code);
+          if(deps.length > 0) {
+            let count = 0;
+            deps.forEach(dep => {
+              loadDeps(dep, () => {
+                count++;
+                if(count == deps.length) {
+                  callback();
+                }
+              });
+            });
+          } else {
+            callback();
+          }
+        })
+      }
+
+      // 找出当前模块下依赖的所有模块文件名
+      function findDeps(code) {
+        let regexp = /require\s*\(\s*(["'])([^"']+)\1\s*\)/g;
+        let deps = [];
+        let match = null;
+        while (match = regexp.exec(code)) {
+          deps.push(match[2]);
+        }
+        return deps;
+      }
+
+    //   window.require = require;
+    // })();
+  </script>
+</body>
+
+</html>

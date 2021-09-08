@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="uft-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tabs</title>
+  <!-- <link rel="icon" href="favicon.png" type="image/png"> -->
+
+  <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
+
+  <style>
+  </style>
+</head>
+
+<body>
+
+  <script type="module">
+    // 具名导出，导出指定内容，需与模块内声明名称相同
+    // 可以使用 as 来声明别名
+    // import { add } from "./math.js";
+    import { add as addCopy } from "./math.js";
+    
+    // 导出所有内容，为一个模块对象
+    // myMath 为对象名，可自定义
+    // 默认导出挂载在 default 属性上
+    import * as myMath from "./math.js";
+
+    // 默认导出，pi 相当于变量名，可自定义
+    // import pi from "./math.js";
+
+    // console.log(addCopy(1, pi));
+    console.log(myMath.add(1, myMath.default));
+  </script>
+</body>
+
+</html>

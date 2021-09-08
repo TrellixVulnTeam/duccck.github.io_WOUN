@@ -4,36 +4,36 @@
 <head>
   <meta charset="uft-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="favicon.png" type="image/png">
   <title>Paint</title>
 
   <style>
-    * {
+    /* * {
       margin: 0;
       padding: 0;
-    }
+    } */
 
-    html,
+    /* html,
     body,
     svg {
       height: 100%;
       width: 100%;
-    }
+    } */
 
     body {
-      display: flex;
+      /* display: flex;
       justify-content: center;
-      align-items: center;
+      align-items: center; */
       background-color: lightgray;
     }
 
     svg {
       display: block;
-      width: 500px;
-      height: 500px;
       background-color: white;
     }
 
     #container {
+      width: 500px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -59,7 +59,7 @@
       border: 1px solid red;
     }
 
-    [type=button] {
+    [type=button], [type=submit] {
       height: 32px;
       border: 1px solid black;
       border-radius: 2px;
@@ -86,15 +86,17 @@
       <div class="wrapper one">
         <input id="color" type="color">
         <input id="line" data-shape="polyline" type="button" value="Line"
-          style="background-color: lightskyblue; margin: 0 0 0 15px;">
+          style="background-color: lightskyblue; margin-left: 15px;">
         <input id="ellipse" data-shape="ellipse" type="button" value="Ellipse">
+        <input id="save" type="submit" value="SAVE" style="margin-left: 15px;" onclick="save()">
+        <input id="open" type="submit" value="OPEN" onclick="open()">
       </div>
       <div class="wrapper two">
         <span id="width-value">Width: 5</span>
         <input id="width" type="range" min="1" max="10" value="5">
       </div>
     </div>
-    <svg></svg>
+    <svg width="500px" height="500px" viewBox="0 0 500 500" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"></svg>
     <div id="caution">
       Caution: Use hotkey (ctrl + z) to undo your operation.
     </div>
@@ -114,11 +116,13 @@
     let button = 0;
     let trackLine = "";
     let line = null;
+    let unsave = true;
 
     // 撤销操作
     function undo() {
       let element = svg.lastElementChild;
       if (element) {
+        unsave = true;
         svg.removeChild(element);
       }
     }
@@ -200,6 +204,7 @@
           line.setAttribute("rx", rx);
           line.setAttribute("ry", ry);
         }
+        unsave = true;
         svg.append(line);
       }
     }
@@ -230,6 +235,37 @@
         }
       }
     });
+
+    // 保存 svg
+    function save() {
+      event.preventDefault();
+      unsave = false;
+      
+      let svgSource = svg.outerHTML;
+      let blob = new Blob(['<?xml version="1.0" encoding="utf-8"?>', svgSource], {type: "application/javascript"})
+      let url = URL.createObjectURL(blob);
+      let anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = "paint.svg";
+      anchor.click();
+    }
+
+    // 打开文件
+    function open() {
+      event.preventDefault();
+
+
+    }
+
+    // 未保存提醒
+    function unload() {
+      if(unsave) {
+        console.log("fuck")
+        return "UNSAVE!";
+      }
+    }
+
+    window.onbeforeunload = unload;
   </script>
 </body>
 

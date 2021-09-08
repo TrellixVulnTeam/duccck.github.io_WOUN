@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="uft-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tabs</title>
+  <link rel="icon" href="favicon.png" type="image/png">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+  <style>
+  </style>
+</head>
+
+<body>
+  <div style="width: 100px; height: 100px; border: 1px solid red;">
+    <span></span>
+  </div>
+
+  <script>
+    // 在事件触发几秒后执行，其间如果事件被重复触发，则重新及时
+    let body = document.body;
+    let span = document.querySelector("span");
+
+    function info(e) {
+      span.innerHTML = `${e.clientX}, ${e.clientY}`
+      console.log(this);
+    }
+
+    // 防抖
+    function debounce(f, duration) {
+      let id = null;
+
+      return function (e) {
+        clearTimeout(id);
+        id = setTimeout(() => {
+          // 将 this 和所有参数传递给 f
+          // this 为调用 debounce 的对象
+          f.call(this, e);
+        }, duration);
+      }
+    }
+
+    // 节流
+    function throttle(f, duration) {
+      let last = null;
+      let id = null;
+
+      return function(e) {
+        if(Date.now() - last > duration) {
+          f.call(this, e);
+          last = Date.now();
+        } else {
+          // 保证事件结束时，即使 Data.now - last < duration，也会再运行一次
+          clearTimeout(id);
+          id = setTimeout(() => {
+            f.call(this, e);
+          }, duration);
+          last = Date.now();
+        }
+      }
+    }
+
+    body.addEventListener("mousemove", debounce(info, 1000));
+    body.addEventListener("mousemove", throttle(info, 1000));
+  </script>
+</body>
+
+</html>

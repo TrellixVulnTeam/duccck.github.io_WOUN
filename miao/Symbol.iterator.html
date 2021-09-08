@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="uft-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tabs</title>
+  <link rel="icon" href="favicon.png" type="image/png">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+  <style>
+  </style>
+</head>
+
+<body>
+
+  <script>
+    // Number.prototype[Symbol.iterator] = function() {
+    //   let i = 1;
+    //   return {
+    //     next() {
+    //       return {
+    //         value: i++,
+    //         done: i > 11
+    //       }
+    //     }
+    //   }
+    // }
+    // for(let i of 10) {
+    //   console.log(i)
+    // }
+
+    // obj = { a: 1, b: 2 }
+    // obj[Symbol.iterator] = function* () {
+    //   for(let p in this) {
+    //     yield this[p];
+    //   }
+    // }
+    // for(let val of obj) {
+    //   console.log(val);
+    // }
+
+    Number.prototype.digits = function*() {
+      let digit = 0;
+      let number = this;
+      while(number > 0) {
+        digit = number % 10;
+        yield digit;
+        number = (number - digit) / 10;
+      }
+    }
+    for(let digit of 16384..digits()) {
+      console.log(digit);
+    }
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="uft-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tabs</title>
+  <link rel="icon" href="favicon.png" type="image/png">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+  <style>
+  </style>
+</head>
+
+<body>
+
+  <script>
+    function paralled(tasks, callback) {
+      if (tasks.length == 0) {
+        callback();
+      } else {
+        let n = 0;
+        for (let task of tasks) {
+          task(() => {
+            n++;
+            if (n == tasks.length) {
+              callback();
+            }
+          });
+        }
+      }
+    }
+
+    function series(tasks, callback) {
+      if (tasks.length == 0) {
+        callback();
+      } else {
+        let n = 0;
+        (function taskStack() {
+          tasks[n](() => {
+            n++;
+            if (n < tasks.length) {
+              tasksStack();
+            } else {
+              callback();
+            }
+          });
+        })();
+      }
+    }
+
+    function map(array, mapper, callback) {
+      if (array.length == 0) {
+        callback([]);
+      } else {
+        let n = 0;
+        let result = [];
+        for (let i = 0; i < array.length; i++) {
+          mapper(array[i], (mapResult) => {
+            result[i].push(mapResult);
+            n++;
+            if (n == array.length) {
+              callback(result);
+            }
+          });
+        }
+      }
+    }
+  </script>
+</body>
+
+</html>
