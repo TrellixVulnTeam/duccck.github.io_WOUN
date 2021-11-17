@@ -1,153 +1,62 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<htmL>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TEXT</title>
+    <link rel="icon" href="favicon.png" type="image/png">
 
-<head>
-  <meta charset="uft-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tabs</title>
-  <link rel="icon" href="favicon.png" type="image/png">
+    <script defer src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    
+    <style></style>
+  </head>
 
-  <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
+  <body>
+    <div id="app">
+      <p>{{ fullname }}</p>
+      <p v-html="rawHtml"></p>
+      <input type="text" :value="content" @input="content = $event.target.value">
+      <input type="text" v-model="content">
 
-  <style>
-  </style>
-</head>
+      <textarea v-model="content"></textarea>
 
-<body>
+      <input type="radio" value="one" v-model="radio">
+      <input type="radio" value="two" v-model="radio">
+      
+      <input type="checkbox" value="one" v-model="check">
+      <input type="checkbox" value="two" v-model="check">
+    </div>
 
-  <script>
-    // https://pouchdb.com/2015/05/18/we-have-a-problem-with-promises.html
-    somePromise().then(function () {
-      // I'm inside a then() function!
-      // There are three things we can do:
-      //   1. return another promise
-      //   2. return a synchronous value(or undefined)
-      //   3. throw a synchronous error
-    });
-    let p = get("google.com");
-    // p2 = p.then(f1, f2);
-    // p2 为 promise 对象
-    // p2 的状态由那一次调用 then 时传入的两个函数其中之一确定
-    //   如果两个函数都还未执行，p2 是 pending 状态
-    //   如果其中之一运行时抛出了错误，p2 失败，失败原因为抛出的这个错误
-    //   如果其中之一运行时返回了一个值
-    //     如果返回是一个常规值（数组，对象等）则 p2 成功，结果为返回的这个值
-    //     如果返回的是一个 promise 对象，则 p2 的状态跟这个 promise 对象同步
-    //   如果对应需要调用的函数不存在，则 p2 取 p 的状态
-
-    function get(url) {
-      return new Promise((resolve, reject) => {
-        let xhr = new XMLHttpRequest();
-        xhr.open("GET", url);
-        xhr.onload = () => {
-          resolve(xhr.responseText);
-        }
-        xhr.onerror = err => {
-          reject(err);
-        }
-        xhr.send();
-      });
-    }
-    function getJSON(url) {
-      return get(url).then(JSON.parse);
-    }
-    function showMessage(msg) {
-      let elt = document.createElement("div");
-      elt.textContent = msg;
-      return document.body.appendChild(elt);
-    }
-    let loading = showMessage("Loading...");
-    getJSON("example/bert.json")
-      .then(function (bert) {
-        return getJSON(bert.spouse)
-      })
-      .then(function (spouse) {
-        return getJSON(spouse.mother);
-      })
-      .then(function (mother) {
-        showMessage(mother.name);
-      })
-      .catch(function (err) {
-        showMessage(String(err));
-      })
-      .then(function () {
-        document.removeChild(loading);
-      });
-
-    Promise.resolve2 = function (val) {
-      return new Promise(resolve => resolve(val));
-    };
-    Promise.reject2 = function (reson) {
-      return new Promise((resolve, reject) => reject(reson));
-    };
-    Promise.all2 = function (promises) {
-      return new Promise((resolve, reject) => {
-        if (promises.length == 0) {
-          resolve([]);
-        } else {
-          let result = [];
-          let count = 0;
-          for (let i = 0; i < promises.length; i++) {
-            promises[i].then(
-              val => {
-                result[i] = val;
-                count++;
-                if (count == promises.length) {
-                  resolve(result);
-                }
-              },
-              err => {
-                reject(err);
-              }
-            );
-          }
-        }
-      })
-    }
-    Promise.allSettled2 = function (promises) {
-      class ObjResult {
-        constructor(state, result) {
-          this.state = state;
-          this.result = result;
-        }
-      }
-      class ObjReason {
-        constructor(state, reason) {
-          this.state = state;
-          this.reason = reason;
-        }
-      }
-      return new Promise((resolve, reject) => {
-        if (promises.length == 0) {
-          resolve([]);
-        } else {
-          let result = [];
-          let count = 0;
-          for (let i = 0; i < promises.length; i++) {
-            promises[i].then(
-              val => {
-                result[i] = new ObjResult("fulfilled", val);
-                count++;
-                if (count == promises.length) {
-                  resolve(result);
-                }
-              },
-              reason => {
-                result[i] = new ObjReason("rejected", reason);
-                count++;
-                if (count == promises.length) {
-                  resolve(result);
-                }
-              }
-            );
+    <script>
+      var app = new Vue({
+        el: "#app",
+        data: {
+          rawHtml: "<strong>FUCK</strong>",
+          content: "FUCK",
+          radio: "one",
+          check: ["one", "two"],
+          fn: "Allen",
+          ln: "Ng"
+        },
+        methods: {
+          
+        },
+        computed: {
+          // fullname() {
+          //   return this.fn + " " + this.ln;
+          // }
+          fullname: {
+            set(val) {
+              [this.fn, this.ln] = val.split(" ");
+            },
+            get() {
+              return this.fn + " " + this.ln;
+            }
           }
         }
       });
-    }
-    Promise.any2 = function (promises) {
-
-    }
-  </script>
-</body>
-
-</html>
+    </script>
+  </body>
+</htmL>

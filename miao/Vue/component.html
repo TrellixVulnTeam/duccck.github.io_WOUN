@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="uft-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="fire.png" type="image/png">
+    <title>Todo</title>
+
+    <style>
+    </style>
+  </head>
+
+  <body>
+    <div id="app"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <script>
+      // 需先声明再使用
+      // 模板只能有一个根元素
+      // 组件定义时命名格式为中划线或 PascalCase，使用时为中划线（因为浏览器解析 html 标签时会转为全小写）
+      // 定义 props 属性命名为 camelCase，使用时为中划线
+      // 但中划线命名无法在 Vue 代码中使用，推荐使用 PascalCase 和 camelCase，html 代码中使用中划线
+      // 自定义事件名使用中划线命名
+      // 使用 props 从父组件向子组件传递数据，使用 events 从子组件向父组件传递数据
+      
+      Vue.component("my-slider", {
+        props: {
+          images: {
+            type: Array,
+            required: true
+          },
+          autoplay: {
+            type: Boolean,
+            default: false
+          },
+          interval: {
+            type: Number,
+            default: 2000
+          }
+        },
+        template: `
+          <div style="width: 300px; border: 1px solid red;">
+            <img :src="images[i]" style="width: 300px;">
+            <button @click="prev">Previous</button>
+            <button @click="next">Next</button>
+          </div>
+        `,
+        data() {
+          return {
+            i: 0,
+            id: null
+          }
+        },
+        methods: {
+          prev() {
+            if(--this.i < 0) {
+              this.i = this.images.length - 1;
+            }
+            this.$emit("change", 1);
+          },
+          next() {
+            if(++this.i == this.images.length) {
+              this.i = 0;
+            }
+            this.$emit("change");
+          }
+        },
+        computed: {
+          // change() {
+          //   if(this.autoplay) {
+          //     let button = document.querySelector("button");
+          //     clearInterval(this.id);
+          //     this.id = setInterval(() => { button.click(); }, interval);
+          //   } else {
+          //     clearInterval(this.id);
+          //   }
+          // }
+        },
+        mounted() {
+          if(this.autoplay) {
+            this.id = setInterval(() => { this.next(); }, this.interval);
+          }
+        },
+        beforeDestroy() {
+          clearInterval(this.id);
+        }
+      });
+      var app = new Vue({
+        el: "#app",
+        template: `
+          <div id="app">
+            <my-slider @click.native="f" v-if="visibility" :images="source" :autoplay="bool" :interval="time" @change="change"></my-slider>
+          </div>
+        `,
+        data: {
+          source: [
+            "https://img10.360buyimg.com/shaidan/jfs/t1/182331/12/19909/86878/611c7050E177b5f1c/9ae15e66b3584ef9.jpg.webp",
+            "https://img10.360buyimg.com/shaidan/jfs/t1/184127/32/12709/90408/60e28041Eaf052efb/0f0239aeac8e9c8b.jpg.webp",
+            "https://img30.360buyimg.com/shaidan/jfs/t1/214408/37/837/84356/616cd89bEba0c5e1b/f84e11263cc84f44.jpg.webp"
+          ],
+          bool: false,
+          time: 1000,
+          visibility: true
+        },
+        methods: {
+          change(val) {
+            console.log(val);
+          },
+          f() {
+            console.log("Fuck");
+          }
+        }
+      });
+    </script>
+  </body>
+</html>

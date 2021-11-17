@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="uft-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="fire.png" type="image/png">
+    <title>Todo</title>
+
+    <style>
+      .remove {
+        display: none;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>Todos power by Vue.js</h1>
+    <div id="app">
+      <div>
+        <input type="checkbox" v-if="todos.length > 0" v-bind:checked="todos.length !== 0 && left == 0" v-on:click="all">
+        <input type="text" placeholder="What needs to be done?" required autofocus v-on:keyup.enter="add">
+      </div>
+      <ul>
+        <li v-bind:class="todo.done ? 'completed' : 'active'" v-for="(todo, index) in todos">
+          <label>
+            <input type="checkbox" v-bind:checked="todo.done" v-on:click="todo.done = !todo.done; count()">
+            {{ todo.item }}
+          </label>
+          <button v-on:click="remove" v-bind:data-index="index">×</button>
+        </li>
+      </ul>
+      <div>
+        <span><em>{{ left }}</em> items left</span>
+        <label><input id="all" type="radio" name="category" v-on:click="total" checked>All</label>
+        <label><input id="active" type="radio" name="category" v-on:click="active" >Active</label>
+        <label><input id="completed" type="radio" name="category" v-on:click="complete" >Completed</label>
+      </div>
+      <button v-if="clear" v-on:click="cancel">Clear completed</button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <script>
+      var app = new Vue({
+        el: "#app",
+        data: {
+          checked: "all",
+          left: 3,
+          clear: false,
+          todos: [
+            {
+              item: "iPod",
+              done: false
+            },
+            {
+              item: "iPad",
+              done: false
+            },
+            {
+              item: "iPhone",
+              done: false
+            }
+          ]
+        },
+        methods: {
+          all: function() {
+            let checkbox = document.querySelector("[type='checkbox']");
+            for(let todo of this.todos) {
+              if(checkbox.checked) {
+                todo.done = true;
+              } else {
+                todo.done = false;
+              }
+            }
+            if(checkbox.checked) {
+              this.left = 0;
+            } else {
+              this.left = this.todos.length;
+            }
+            this.completed();
+            this.update();
+          },
+          count: function() {
+            let count = 0;
+            for(let todo of this.todos) {
+              if(!todo.done) {
+                count++;
+              }
+            }
+            this.left = count;
+            this.completed();
+            this.update();
+          },
+          completed: function() {
+            if(this.left !== this.todos.length) {
+              this.clear = true;
+            } else {
+              this.clear = false;
+            }
+          },
+          add: function() {
+            let input = document.querySelector("[type='text']");
+            if(input.value) {
+              this.todos.unshift({ item: input.value, done: false });
+              input.value = "";
+            }
+            this.update();
+          },
+          remove: function(e) {
+            let index = e.target.getAttribute("data-index");
+            this.todos.splice(index, 1);
+            this.count();
+            this.update();
+          },
+          cancel: function() {
+            for(let todo of this.todos) {
+              if(todo.done) {
+                todo.done = false;
+              }
+            }
+            this.count();
+          },
+          total: function() {
+            this.checked = "all";
+            let li = document.querySelectorAll("li");
+            li.forEach(item => {
+              if(item.classList.contains("remove")) {
+                item.classList.remove("remove");
+              }
+            });
+          },
+          active: function() {
+            this.checked = "active";
+            let li = document.querySelectorAll("li");
+            li.forEach(item => {
+              if(item.classList.contains("active")) {
+                item.classList.remove("remove");
+              } else {
+                item.classList.add("remove");
+              }
+            });
+          },
+          complete: function() {
+            this.checked = "completed";
+            let li = document.querySelectorAll("li");
+            li.forEach(item => {
+              if(item.classList.contains("completed")) {
+                item.classList.remove("remove");
+              } else {
+                item.classList.add("remove");
+              }
+            });
+          },
+          update: function() {
+            let input = document.getElementById(this.checked);
+            setTimeout(() => {input.click()}, 10);
+          }
+        }
+      });
+    </script>
+  </body>
+</html>

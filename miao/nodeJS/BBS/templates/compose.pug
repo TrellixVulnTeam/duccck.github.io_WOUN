@@ -1,0 +1,11 @@
+extends layout.pug
+
+block header
+block content
+  h3 Create a post
+  form(action="/compose" method="POST")
+    label(for="title") Title
+    input(id="title" type="text" name="title" value="" placeholder="" required style="width: 300px;")
+    textarea(rows="20" name="content" placeholder="Text (optional)" style="width: 300px; resize: none;")
+    button Submit
+    button Cancel

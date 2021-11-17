@@ -1,0 +1,65 @@
+extends layout.pug
+
+block append head
+  script(src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous")
+
+block content
+  h1= post.title
+  img(src="/img/" + avatar alt="avatar" style="width: 16px;")
+  |
+  |
+  span= post.username
+    i= ` ${post.timestamp}`
+    |
+    |
+    if post.username == loginUser
+      button(class="deletePost" data-postid = post.postid) Delete
+  p(style="border: 1px solid black; padding: 5px;")= post.content
+  hr
+  
+  if isLogin
+    h3 Comment
+    form(action=`/comment/post/${post.postid}` method="POST")
+      input(type="text" name="content" value="" required)
+      input(type="submit" value="Submit")
+  else
+    p
+      a(href="/login") Log in
+      |  or 
+      a(href="/register") sign up
+      |  to leave a comment.
+  
+  - for(let i = commentsSpec.length - 1; i >= 0; i--)
+    div(style="position: relative;")
+      p= commentsSpec[i].username
+        i= ` ${commentsSpec[i].timestamp} `
+        if commentsSpec[i].username == loginUser
+          button(class="deleteComment" data-commentid = commentsSpec[i].commentid) Delete
+      p= commentsSpec[i].content
+      hr
+
+  script.
+    $(
+      $(".deletePost").click(function() {
+        let r = confirm("Do you want to delete the post?");
+        if(r) {
+          location.assign("/");
+          $.ajax("/delete_post", {
+            method: "DELETE",
+            data: { postid: $(this).attr("data-postid") }
+          });
+        }
+      })
+    );
+    $(
+      $(".deleteComment").click(function() {
+        let r = confirm("Do you want to delete the comment?");
+        if(r) {
+          $(this).offsetParent().remove();
+          $.ajax("/delete_comment", {
+            method: "DELETE",
+            data: { commentid: $(this).attr("data-commentid") }
+          });
+        }
+      })
+    );

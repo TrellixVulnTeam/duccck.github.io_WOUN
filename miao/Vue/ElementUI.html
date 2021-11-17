@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="uft-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="fire.png" type="image/png">
+    <title>Todo</title>
+
+    <style>
+    </style>
+  </head>
+
+  <body>
+    <div id="app"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <script>
+      // 简单实现elementui
+      //   el-pagination
+      //   el-progress
+      //   el-input-number
+      Vue.component("pagination", {
+        props: {
+          total: {
+            type: Number,
+            required: true
+          },
+          size: {
+            type: Number,
+            required: true
+          }
+        },
+        template: `
+          
+        `,
+        data() {
+          return {
+
+          };
+        }
+      });
+      var app = new Vue({
+        el: "#app",
+        template: `
+          <div id="#app">
+            <div>When you have few pages</div>
+            <pagination :total="total" :size="size"></pagination>
+          </div>
+        `,
+        data: {
+          total: 10,
+          size: 5
+        },
+        methods: {
+        }
+      });
+    </script>
+  </body>
+</html>

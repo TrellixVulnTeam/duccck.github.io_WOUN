@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="uft-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="fire.png" type="image/png">
+    <script src="development-jQuery-3.6.0.js"></script>
+    <title>Todo</title>
+
+    <style>
+      .completed {
+        text-decoration-line: line-through;
+      }
+      .invisible {
+        visibility: hidden;
+      }
+      .remove {
+        display: none;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>Todos</h1>
+    <div>
+      <input type="checkbox" id="selectAll" class="invisible">
+      <input type="text" id="addItem" name="thing" value="" placeholder="What needs to be done?" required autofocus>
+    </div>
+    <ul id="allList"></ul>
+    <div>
+      <span><em id="count">0</em> items left</span>
+      <div>
+        <label><input type="radio" id="all" name="list" checked>All</label>
+        <label><input type="radio" id="active" name="list">Active</label>
+        <label><input type="radio" id="completed" name="list">Completed</label>
+      </div>
+      <button id="clearButton" disabled>Clear completed</button>
+    </div>
+
+    <script>
+      $(function() {
+        const addItem = $("#addItem");
+        const allList = $("#allList");
+        const count = $("#count");
+        const selectAll = document.getElementById("selectAll");
+        const all = $("#all");
+        const active = $("#active");
+        const completed = $("#completed");
+        const clearButton = $("#clearButton");
+
+        function status() {
+          let sum = allList.children().length;
+          if(sum == 0) {
+            selectAll.checked = false;
+            if(!$(selectAll).hasClass("invisible")) {
+              $(selectAll).addClass("invisible");
+            }
+            count.text("0");
+            clearButton.prop("disabled", true);
+          } else {
+            if($(selectAll).hasClass("invisible")) {
+              $(selectAll).removeClass("invisible");
+            }
+            if($("#allList li").children("input:checked").length == sum) {
+              selectAll.checked = true;
+            } else {
+              selectAll.checked = false;
+            }
+            let number = $("#allList li").children("input").not(":checked").length;
+            count.text(number);
+            if(number == sum) {
+              clearButton.prop("disabled", true);
+            } else {
+              clearButton.prop("disabled", false);
+            }
+          }
+        }
+        function checkboxStatus(checked, status) {
+          let input = $("#allList li").children("input" + checked);
+          input.each(function() {
+            $(this).prop("checked", status);
+          });
+        }
+        function specSpanStatus(status, span) {
+          if(status) {
+            if(!$(span).hasClass("completed")) {
+              $(span).addClass("completed");
+            }
+          } else {
+            $(span).removeClass("completed");
+          }
+        }
+        function allSpanStatus(status) {
+          let span = $("#allList li").children("span");
+          span.each(function() {
+            specSpanStatus(status, $(this));
+          });
+        }
+        function updateList() {
+          let radio = $("[name='list']");
+          radio.each(function() {
+            if($(this).prop("checked")) {
+              $(this).click();
+            }
+          });
+        }
+
+        addItem.keyup(function(e) {
+          let content = addItem.val().trim();
+          if(e.key == "Enter" && content) {
+            let li = document.createElement("li");
+            let input = document.createElement("input");
+            let span = document.createElement("span");
+            $(span).prop("contenteditable", "true");
+            input.type = "checkbox";
+            input.onclick = function() {
+              specSpanStatus(input.checked, span);
+              status();
+              updateList();
+            }
+            span.textContent = content + " ";
+            let button = document.createElement("button");
+            button.textContent = "×";
+            button.onclick = function() {
+              $(this).parent().remove();
+              status();
+            }
+            li.append(input, span, button);
+            allList.prepend(li);
+            addItem.val("");
+            status();
+            updateList();
+          }
+        });
+
+        selectAll.onclick = function() {
+          checkboxStatus("", selectAll.checked);
+          allSpanStatus(selectAll.checked);
+          status();
+          updateList();
+        }
+
+        clearButton.click(function() {
+          checkboxStatus(":checked", false);
+          allSpanStatus(false);
+          status();
+          updateList();
+        });
+
+        all.click(function() {
+          let span = $("#allList li").children("span");
+          span.each(function() {
+            if($(this).parent().hasClass("remove")) {
+              $(this).parent().removeClass("remove");
+            }
+          });
+        });
+
+        active.click(function() {
+          let span = $("#allList li").children("span");
+          span.each(function() {
+            if(!$(this).hasClass("completed")) {
+              if($(this).parent().hasClass("remove")) {
+                $(this).parent().removeClass("remove");
+              }
+            } else {
+              if(!$(this).parent().hasClass("remove")) {
+                $(this).parent().addClass("remove");
+              }
+            }
+          });
+        });
+
+        completed.click(function() {
+          let span = $("#allList li").children("span");
+          span.each(function() {
+            if(!$(this).hasClass("completed")) {
+              if(!$(this).parent().hasClass("remove")) {
+                $(this).parent().addClass("remove");
+              }
+            } else {
+              if($(this).parent().hasClass("remove")) {
+                $(this).parent().removeClass("remove");
+              }
+            }
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

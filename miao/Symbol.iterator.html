@@ -16,30 +16,44 @@
 <body>
 
   <script>
-    // Number.prototype[Symbol.iterator] = function() {
-    //   let i = 1;
-    //   return {
-    //     next() {
-    //       return {
-    //         value: i++,
-    //         done: i > 11
-    //       }
-    //     }
-    //   }
+    // function* foo() {
+    //   yield 1;
+    //   yield 2;
+    //   yield 3;
     // }
-    // for(let i of 10) {
-    //   console.log(i)
+    // // foo() 返回一个 iterable，所以可以使用 for...of
+    // // 当对象具有 Symbol.iterator 属性且该属性返回 next() 时，则被认为是 iterable，可以使用 for...of
+    // for(let x of foo()) {
+    //   console.log(x); 
+    //   // 1
+    //   // 2
+    //   // 3
     // }
 
-    // obj = { a: 1, b: 2 }
-    // obj[Symbol.iterator] = function* () {
-    //   for(let p in this) {
-    //     yield this[p];
-    //   }
-    // }
-    // for(let val of obj) {
-    //   console.log(val);
-    // }
+    Number.prototype[Symbol.iterator] = function() {
+      let i = 1;
+      return {
+        next() {
+          return {
+            value: i++,
+            done: i > 11
+          }
+        }
+      }
+    }
+    for(let i of 10) {
+      console.log(i)
+    }
+
+    obj = { a: 1, b: 2 }
+    obj[Symbol.iterator] = function* () {
+      for(let p in this) {
+        yield this[p];
+      }
+    }
+    for(let val of obj) {
+      console.log(val);
+    }
 
     Number.prototype.digits = function*() {
       let digit = 0;
@@ -52,6 +66,36 @@
     }
     for(let digit of 16384..digits()) {
       console.log(digit);
+    }
+
+    // 异步生成器
+    async function* foo() {
+      await getValue(1, 5000);
+      yield 10;
+      await getValue(2, 5000);
+      yield 20;
+      await getValue(3, 5000);
+      yield 30;
+    }
+    (async () => {
+      for await (let x of foo()) {
+        console.log(x);
+        // 10
+        // 20
+        // 30
+      }
+    })();
+    let g = foo();
+    // 调用 next() 会立刻返回一个 promise
+    // 该 promise 在等待 getValue 完成后调用 resolve 方法，它的 result 为 {value: , done: }
+    g.next(); // 对应 yield 10
+    g.next(); // 对应 yield 20
+    g.next(); // 对应 yield 30
+    g.next(); // 对应 {value: undefined, done: true}
+    function getValue(n, time) {
+      return new Promise(resolve => {
+        setTimeout(() => resolve(n), time);
+      });
     }
   </script>
 </body>

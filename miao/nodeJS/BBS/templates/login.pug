@@ -1,0 +1,17 @@
+extends layout.pug
+
+block header
+block content
+  h3 Login
+  form(action="/login" method="POST")
+    label(for="username") Username
+    input(id="username" type="text" name="username" value="" placeholder="" required)
+    label(for="password") Password
+    input(id="password" type="password" name="password" value="" placeholder="" required)
+    label(for="captcha") Captcha
+    input(id="captcha" type="text" name="captcha" value="" placeholder="" required)
+    |
+    |
+    img(src="/captcha" alt="captcha" style="height: 32px;")
+    button Submit
+    button Cancel

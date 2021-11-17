@@ -17,6 +17,7 @@
 
   <script>
     // https://pouchdb.com/2015/05/18/we-have-a-problem-with-promises.html
+    // https://bluepnume.medium.com/even-with-async-await-you-probably-still-need-promises-9b259854c161
     somePromise().then(function () {
       // I'm inside a then() function!
       // There are three things we can do:
@@ -24,6 +25,13 @@
       //   2. return a synchronous value(or undefined)
       //   3. throw a synchronous error
     });
+
+    Promise.resolve('foo').then(Promise.resolve('bar')).then(function (result) {
+      console.log(result); // foo
+    });
+    // when you pass then() a non-function (such as a promise), it actually interprets it as then(null)
+    // then() is supposed to take a function, always pass a function into then()
+
     let p = get("google.com");
     p2 = p.then(f1, f2);
     // p2 为 promise 对象
@@ -74,6 +82,7 @@
         document.removeChild(loading);
       });
 
+    // 实现 Promise 的方法
     Promise.resolve2 = function (val) {
       return new Promise(resolve => resolve(val));
     };
@@ -144,9 +153,348 @@
         }
       });
     }
-    Promise.any2 = function (promises) {
-
+    Promise.prototype.finally2 = function (callback) {
+      return this.then(
+        val => {
+          return Promise.resolve(callback()).then(() => val);
+        },
+        reason => {
+          return Promise.resolve(callback()).then(() => { throw reason });
+        }
+      );
     }
+
+    // 文章章节获取及展示
+    // 1、逐个获取&展示，耗时最长
+    // version 1
+    urls = ["chapter-1.json", "chapter-2.json", "chapter-3.json"];
+    Promise.resolve()
+      .then(() => getJSON(ulrs[0]))
+      .then(content => { show(content); })
+      .then(() => getJSON(ulrs[1]))
+      .then(content => { show(content) })
+      .then(() => getJSON(ulrs[2]))
+      .then(content => { show(content) })
+    // version 2
+    p = Promise.resolve();
+    for (let i = 0; i < ulrs.length; i++) {
+      p = p
+        .then(() => getJSON(ulrs[i]))
+        .then(content => { show(content); })
+    }
+    // version 3
+    urls.reduce(function (initial, url) {
+      return initial.then(() => getJSON(url)).then(content => { show(content); });
+    }, Promise.resolve());
+    // 同时获取，按顺序逐个展示
+    let chapters = urls.map(url => getJSON(url));
+    chapters.reduce((initial, chapter) => {
+      return initial.then(() => chapter).then(content => { show(content); });
+    }, Promise.resolve());
+    // 使用 async-await 改写
+    async function showStory(url) {
+      let subUrls = await getJSON(url);
+      let chapters = subUrls.urls.map(url => getJSON(url));
+      for (let chapter of chapters) {
+        let content = await chapter;
+        show(content);
+      }
+    }
+
+    // 实现 Promise
+    class Promise2 {
+      constructor(f) {
+        this.status = "pending";
+        this.result = null;
+        this.reason = null;
+        this.onResolvedCallbacks = [];
+        this.onRejectedCallbacks = [];
+        const resolve = result => {
+          if (this.status = "pending") {
+            this.status = "fulfilled";
+            this.result = result;
+            for (let onResolved of this.onResolvedCallbacks) {
+              onResolved(this.result);
+            }
+          }
+        }
+        const reject = reason => {
+          if (this.status = "pending") {
+            this.status = "rejected";
+            this.reason = reason;
+            for (let onRejected of this.onRejectedCallbacks) {
+              onRejected(this.reason);
+            }
+          }
+        }
+        try {
+          f(resolve, reject);
+        } catch (err) {
+          reject(err);
+        }
+      }
+      then(onResolved, onRejected) {
+        if (typeof onResolved != "function") {
+          onResolved = value => value;
+        }
+        if (typeof onRejected != "function") {
+          onRejected = reason => { throw reason };
+        }
+        return new Promise2((resolve, reject) => {
+          if (this.status == "pending") {
+            this.onResolvedCallbacks.push(result => {
+              try {
+                let x = onResolved(result);
+                if (x instanceof Promise2) {
+                  x.then(resolve, reject);
+                } else {
+                  resolve(x);
+                }
+              } catch (err) {
+                reject(err);
+              }
+            });
+            this.onRejectedCallbacks.push(reason => {
+              try {
+                let x = onRejected(reason);
+                if (x instanceof Promise2) {
+                  x.then(resolve, reject);
+                } else {
+                  resolve(x);
+                }
+              } catch (err) {
+                reject(err);
+              }
+            });
+          } else {
+            if (this.status == "fulfilled") {
+              setTimeout(() => {
+                try {
+                  let x = onResolved(this.result);
+                  if (x instanceof Promise2) {
+                    // x.then(val => resolve(val), reason => reject(reason));
+                    x.then(resolve, reject);
+                  } else {
+                    resolve(x);
+                  }
+                } catch (err) {
+                  reject(err);
+                }
+              });
+            }
+            if (this.status == "rejected") {
+              setTimeout(() => {
+                try {
+                  let x = onRejected(this.reason);
+                  if (x instanceof Promise2) {
+                    x.then(reject);
+                  } else {
+                    reject(x);
+                  }
+                } catch (err) {
+                  reject(err);
+                }
+              });
+            }
+          }
+        })
+      }
+    }
+
+    // Promise & Generator
+    function getValue(n, time) {
+      return new Promise(resolve => {
+        setTimeout(() => resolve(n), time);
+      });
+    }
+    // 不考虑 Promise 抛出错误
+    function* generator() {
+      console.log("Begain");
+      let x = yield getValue(1, 1000);
+      console.log(`x = ${x}`);
+      let y = yield getValue(2, 2000);
+      console.log(`y = ${y}`);
+      let z = yield getValue(3, 3000);
+      console.log(`z = ${z}`);
+    }
+    // version 1
+    let iterable = generator();
+    let g = iterable.next();
+    g.value.then(val => {
+      g = iterable.next(val);
+      g.value.then(val => {
+        g = iterable.next(val);
+        g.value.then(val => {
+          iterable.next(val);
+        })
+      });
+    });
+    // version 2
+    function run(generator) {
+      let iterable = generator();
+      let g = null;
+      function tick(value) {
+        g = iterable.next(value);
+        if (!g.done) {
+          g.value.then(value => {
+            tick(value);
+          })
+        }
+      }
+      tick();
+    }
+
+    // Promise 抛出错误处理
+    // async-await 的原理
+    function* generator() {
+      console.log("Begain");
+      let x = yield getValue(1, 1000);
+      console.log(`x = ${x}`);
+      let y = yield getValue(2, 2000);
+      // 使用 try...catch 捕获 promise 抛出的错误
+      try {
+        let y = yield Promise.reject("FUCK");
+        console.log(`y = ${y}`);
+      } catch (err) {
+        console.log(err);
+      }
+      // let z = yield getValue(3, 3000);
+      let z = yield Promise.reject("ERROR");
+      console.log(`z = ${z}`);
+      // 此处 generator.done = true，generator.value = 100
+      return 100;
+    }
+    function run(generator) {
+      return new Promise((resolve, reject) => {
+        let iterable = generator();
+        let g = iterable.next();
+        function tick() {
+          if (!g.done) {
+            g.value.then(
+              value => {
+                // 异步执行的代码抛出错误且该错误不在 generator 的 try...catch 中时，无法被 promise.catch 拿到
+                // 此处需要使用额外的 try...catch 来捕获该错误
+                try {
+                  g = iterable.next(value);
+                  tick();
+                } catch (err) {
+                  reject(err);
+                }
+              },
+              reason => {
+                try {
+                  g = iterable.throw(reason);
+                  tick();
+                } catch (err) {
+                  reject(err);
+                }
+              }
+            )
+          } else {
+            // generator 运行完后通知调用函数
+            resolve(g.value);
+          }
+        }
+        tick();
+      });
+    }
+    run(generator).then(
+      value => { console.log(`END: ${value}`); },
+      reason => { console.log(`END: ${reason}`); },
+    );
+
+    // Async functions always return a promise.
+    // If the return value of an async function is not explicitly a promise, it will be implicitly wrapped in a promise.
+    async function foo() {
+      return 1
+    }
+    // similar to, but not equivalent
+    function foo() {
+      return Promise.resolve(1)
+    }
+
+    // 当 async function 中没有 await 时或 await 之前的代码：run synchronously
+    // code after each await expression (same as yield in generator) can be thought of as existing in a .then callback
+    async function foo() {
+      await 1
+    }
+    // equivalent to
+    function foo() {
+      return Promise.resolve(1).then(() => undefined)
+    }
+
+    async function f() {
+      try {
+        await new Promise((_, reject) => {
+          reject("error");
+        });
+      } catch (e) {
+        console.log(e);
+      }
+    }
+    f(); // error
+
+    //下载链接资源，如果失败，则1s后重新尝试，尝试5次后退出
+    function get(url) {
+      return new Promise((resolve, reject) => {
+        let xhr = new XMLHttpRequest();
+        xhr.open("GET", url);
+        xhr.onload = () => {
+          if (xhr.status > 400) {
+            reject(xhr.responseText);
+          } else {
+            resolve(xhr.responseText);
+          }
+        };
+        xhr.onerror = err => {
+          reject(err);
+        };
+        xhr.send();
+      });
+    }
+    function wait(time) {
+      return new Promise(resolve => {
+        setTimeout(resolve, time);
+      });
+    }
+    // async-await version
+    async function download(url) {
+      for (let i = 0; i < 5; i++) {
+        try {
+          let result = await get(url);
+          return result;
+        } catch (err) {
+          if (i < 4) {
+            await wait(1000);
+          }
+          continue;
+        }
+      }
+      throw "Fail!";
+    }
+    // Promise version
+    function download(url) {
+      return new Promise((resolve, reject) => {
+        let count = 0;
+        function deal() {
+          get(url).then(
+            val => {
+              resolve(val);
+            },
+            reason => {
+              count++;
+              if(count > 4) {
+                reject("Fail!");
+              } else {
+                setTimeout(deal, 1000);
+              }
+            }
+          )
+        }
+        deal();
+      })
+    }
+    download("Promise.html").then(val => { console.log(val); }, rea => { console.log(rea); })
   </script>
 </body>
 

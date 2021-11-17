@@ -1,0 +1,27 @@
+doctype html
+html
+  block head
+    head
+      meta(charset="uft-8")
+      title Talk Square
+
+  body
+    header
+      h1 Talk Square
+      block header
+        if isLogin
+          a(href="/compose"): button Compose
+          |
+          |
+          a(href="/logout"): button Log out
+        else
+          a(href="/login"): button Login
+          |
+          |
+          a(href="/register"): button Register
+    
+    main
+      block content
+    
+    footer
+      p &#169 2021
